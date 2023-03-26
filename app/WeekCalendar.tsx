@@ -1,139 +1,78 @@
-"use client"
+import React from "react";
 
-import { useState, useEffect } from "react"
-import { WeekHeader } from "./WeekHeader"
-{/* <div className="flex flex-col h-40 mx-auto xl:w-40 lg:w-30 md:w-30 sm:w-full w-10 overflow-hidden">
-            <div className="top h-5 w-full">
-              <span className="text-gray-500">1</span>
-            </div>
-            <div className=" bottom flex-grow h-30 py-1 w-full cursor-pointer">
-              <div className="event bg-purple-400 text-white rounded p-1 text-sm mb-1">
-                <span className="event-name">Meeting</span>
-                <span className="time">12:00~14:00</span>
-              </div>
-              <div className="event bg-purple-400 text-white rounded p-1 text-sm mb-1">
-                <span className="event-name">Meeting</span>
-                <span className="time">18:00~20:00</span>
-              </div>
-            </div>
-          </div> */}
-export const WeekCalendar = () => {
+type ScheduleItem = {
+  subject: string;
+  startTime: string;
+  endTime: string;
+  dayOfWeek: number;
+};
 
-  const tableCols = () => {
-    const cols = []
-    for (let i = 1; i < 8; i++) {
-      cols.push(
-        <th
-          key={i}
-          className="border p-1 h-full xl:w-40 lg:w-30 md:w-30 sm:w-20 w-10 overflow-auto transition cursor-pointer duration-500 ease hover:bg-gray-300"
-        >
-          <div className="flex flex-col h-40 mx-auto xl:w-40 lg:w-30 md:w-30 sm:w-full w-10 overflow-hidden">
-            <div className="top h-5 w-full">
-              <span className="text-gray-500">1</span>
-            </div>
-            <div className=" bottom flex-grow h-30 py-1 w-full cursor-pointer">
-              <div className="event bg-purple-400 text-white rounded p-1 text-sm mb-1">
-                <span className="event-name">Meeting</span>
-                <span className="time">12:00~14:00</span>
-              </div>
-              <div className="event bg-purple-400 text-white rounded p-1 text-sm mb-1">
-                <span className="event-name">Meeting</span>
-                <span className="time">18:00~20:00</span>
-              </div>
-            </div>
-          </div>
-        </th>
-      )
-    }
-    return cols
-  }
+interface CustomDivProps extends React.HTMLAttributes<HTMLDivElement> {
+  colSpan?: number;
+  rowSpan?: number;
+}
 
-  const renderTable = () => {
-    const tableRows = []
-    let hour = 7
-    let minute = 0
-    for (let i = 0; i < 30; i++) {
-      const time = `${hour.toString().padStart(2, "0")}:${minute
-        .toString()
-        .padStart(2, "0")}`
-      tableRows.push(
-        <tr key={i} className="text-center h-10 relative">
-          <td className="border p-1 h-full xl:w-10 w-5">{time}</td>{" "}
-          {tableCols()}
-        </tr>
-      )
-      minute += 30
-      if (minute === 60) {
-        minute = 0
-        hour += 1
-      }
-    }
-    return tableRows
-  }
+const DAYS_OF_WEEK = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+const TIME_SLOTS = ["8:00", "9:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00"];
+
+export const WeekCalendar: React.FC = () => {
+  const schedule: ScheduleItem[] = [
+    { subject: "Math", startTime: "8:00", endTime: "9:00", dayOfWeek: 0 },
+    { subject: "English", startTime: "10:00", endTime: "11:00", dayOfWeek: 1 },
+    { subject: "Science", startTime: "13:00", endTime: "14:00", dayOfWeek: 2 },
+    { subject: "History", startTime: "9:00", endTime: "10:00", dayOfWeek: 3 },
+    { subject: "PE", startTime: "14:00", endTime: "15:00", dayOfWeek: 4 },
+  ];
+
+  const getRowSpan = (startTime: string, endTime: string) => {
+    const start = TIME_SLOTS.indexOf(startTime);
+    const end = TIME_SLOTS.indexOf(endTime);
+    return end - start + 1;
+  };
 
   return (
-      <div className="bg-gray-200">
-        <div className="container mx-auto">
-          <div className="wrapper bg-white rounded shadow w-full ">
-            <div className="header flex justify-between border-b p-2">
-              <span className="text-lg font-bold ">2023 Jann Jaspher</span>
-              <div className="buttons">
-                <button className="p-1">
-                  <svg
-                    width="1em"
-                    fill="gray"
-                    height="1em"
-                    viewBox="0 0 16 16"
-                    className="bi bi-arrow-left-circle"
-                    xmlns="http://www.w3.org/2000/svg"
+    <div className="container mx-auto">
+      <table className="table-auto w-full">
+        <thead>
+          <tr>
+            <th></th>
+            {DAYS_OF_WEEK.map((day) => (
+              <th className="text-center font-bold" key={day}>
+                {day}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {TIME_SLOTS.map((time, index) => (
+            <tr key={time}>
+              <td className="py-2">{time}</td>
+              {DAYS_OF_WEEK.map((day, dayIndex) => {
+                const item = schedule.find(
+                  (item) => item.startTime === time && item.dayOfWeek === dayIndex
+                );
+                return (
+                  <td
+                    className={`p-2 rounded-lg ${item ? "bg-blue-200" : ""}`}
+                    key={dayIndex}
+                    colSpan={1}
+                    rowSpan={item ? getRowSpan(item.startTime, item.endTime) : 1}
                   >
-                    <path
-                      fill-rule="evenodd"
-                      d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"
-                    />
-                    <path
-                      fill-rule="evenodd"
-                      d="M8.354 11.354a.5.5 0 0 0 0-.708L5.707 8l2.647-2.646a.5.5 0 1 0-.708-.708l-3 3a.5.5 0 0 0 0 .708l3 3a.5.5 0 0 0 .708 0z"
-                    />
-                    <path
-                      fill-rule="evenodd"
-                      d="M11.5 8a.5.5 0 0 0-.5-.5H6a.5.5 0 0 0 0 1h5a.5.5 0 0 0 .5-.5z"
-                    />
-                  </svg>
-                </button>
-                <button className="p-1">
-                  <svg
-                    width="1em"
-                    fill="gray"
-                    height="1em"
-                    viewBox="0 0 16 16"
-                    className="bi bi-arrow-right-circle"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      fill-rule="evenodd"
-                      d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"
-                    />
-                    <path
-                      fill-rule="evenodd"
-                      d="M7.646 11.354a.5.5 0 0 1 0-.708L10.293 8 7.646 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0z"
-                    />
-                    <path
-                      fill-rule="evenodd"
-                      d="M4.5 8a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5z"
-                    />
-                  </svg>
-                </button>
-              </div>
-            </div>
-            <table className="w-full">
-              <WeekHeader />
-              <tbody>
-                {renderTable()}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    )
-  }
+                    {item && (
+                      <>
+                        <p className="font-bold">{item.subject}</p>
+                        <p>
+                          {item.startTime} - {item.endTime}
+                        </p>
+                      </>
+                    )}
+                  </td>
+                );
+              })}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};
