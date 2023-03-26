@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { WeekHeader } from "./WeekHeader"
 {/* <div className="flex flex-col h-40 mx-auto xl:w-40 lg:w-30 md:w-30 sm:w-full w-10 overflow-hidden">
             <div className="top h-5 w-full">
               <span className="text-gray-500">1</span>
@@ -20,13 +21,27 @@ export const WeekCalendar = () => {
 
   const tableCols = () => {
     const cols = []
-    for (let i = 0; i < 7; i++) {
+    for (let i = 1; i < 8; i++) {
       cols.push(
         <th
           key={i}
           className="border p-1 h-full xl:w-40 lg:w-30 md:w-30 sm:w-20 w-10 overflow-auto transition cursor-pointer duration-500 ease hover:bg-gray-300"
         >
-          
+          <div className="flex flex-col h-40 mx-auto xl:w-40 lg:w-30 md:w-30 sm:w-full w-10 overflow-hidden">
+            <div className="top h-5 w-full">
+              <span className="text-gray-500">1</span>
+            </div>
+            <div className=" bottom flex-grow h-30 py-1 w-full cursor-pointer">
+              <div className="event bg-purple-400 text-white rounded p-1 text-sm mb-1">
+                <span className="event-name">Meeting</span>
+                <span className="time">12:00~14:00</span>
+              </div>
+              <div className="event bg-purple-400 text-white rounded p-1 text-sm mb-1">
+                <span className="event-name">Meeting</span>
+                <span className="time">18:00~20:00</span>
+              </div>
+            </div>
+          </div>
         </th>
       )
     }
@@ -35,14 +50,23 @@ export const WeekCalendar = () => {
 
   const renderTable = () => {
     const tableRows = []
+    let hour = 7
+    let minute = 0
     for (let i = 0; i < 30; i++) {
+      const time = `${hour.toString().padStart(2, "0")}:${minute
+        .toString()
+        .padStart(2, "0")}`
       tableRows.push(
         <tr key={i} className="text-center h-10 relative">
-        
-          
+          <td className="border p-1 h-full xl:w-10 w-5">{time}</td>{" "}
           {tableCols()}
         </tr>
       )
+      minute += 30
+      if (minute === 60) {
+        minute = 0
+        hour += 1
+      }
     }
     return tableRows
   }
@@ -103,68 +127,8 @@ export const WeekCalendar = () => {
               </div>
             </div>
             <table className="w-full">
-              <thead>
-                <tr>
-                  <th className="p-2 border-r h-10 xl:w-40 lg:w-30 md:w-30 sm:w-20 w-10 xl:text-sm text-xs">
-                    <span className="xl:block lg:block md:block sm:block hidden">
-                      Sunday
-                    </span>
-                    <span className="xl:hidden lg:hidden md:hidden sm:hidden block">
-                      Sun
-                    </span>
-                  </th>
-                  <th className="p-2 border-r h-10 xl:w-40 lg:w-30 md:w-30 sm:w-20 w-10 xl:text-sm text-xs">
-                    <span className="xl:block lg:block md:block sm:block hidden">
-                      Monday
-                    </span>
-                    <span className="xl:hidden lg:hidden md:hidden sm:hidden block">
-                      Mon
-                    </span>
-                  </th>
-                  <th className="p-2 border-r h-10 xl:w-40 lg:w-30 md:w-30 sm:w-20 w-10 xl:text-sm text-xs">
-                    <span className="xl:block lg:block md:block sm:block hidden">
-                      Tuesday
-                    </span>
-                    <span className="xl:hidden lg:hidden md:hidden sm:hidden block">
-                      Tue
-                    </span>
-                  </th>
-                  <th className="p-2 border-r h-10 xl:w-40 lg:w-30 md:w-30 sm:w-20 w-10 xl:text-sm text-xs">
-                    <span className="xl:block lg:block md:block sm:block hidden">
-                      Wednesday
-                    </span>
-                    <span className="xl:hidden lg:hidden md:hidden sm:hidden block">
-                      Wed
-                    </span>
-                  </th>
-                  <th className="p-2 border-r h-10 xl:w-40 lg:w-30 md:w-30 sm:w-20 w-10 xl:text-sm text-xs">
-                    <span className="xl:block lg:block md:block sm:block hidden">
-                      Thursday
-                    </span>
-                    <span className="xl:hidden lg:hidden md:hidden sm:hidden block">
-                      Thu
-                    </span>
-                  </th>
-                  <th className="p-2 border-r h-10 xl:w-40 lg:w-30 md:w-30 sm:w-20 w-10 xl:text-sm text-xs">
-                    <span className="xl:block lg:block md:block sm:block hidden">
-                      Friday
-                    </span>
-                    <span className="xl:hidden lg:hidden md:hidden sm:hidden block">
-                      Fri
-                    </span>
-                  </th>
-                  <th className="p-2 border-r h-10 xl:w-40 lg:w-30 md:w-30 sm:w-20 w-10 xl:text-sm text-xs">
-                    <span className="xl:block lg:block md:block sm:block hidden">
-                      Saturday
-                    </span>
-                    <span className="xl:hidden lg:hidden md:hidden sm:hidden block">
-                      Sat
-                    </span>
-                  </th>
-                </tr>
-              </thead>
+              <WeekHeader />
               <tbody>
-                
                 {renderTable()}
               </tbody>
             </table>
