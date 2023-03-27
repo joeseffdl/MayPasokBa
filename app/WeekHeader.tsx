@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
 export const WeekHeader = () => {
-    const daysOfWeek = [
+  const daysOfWeek = [
     "",
     "Sunday",
     "Monday",
@@ -10,7 +10,7 @@ export const WeekHeader = () => {
     "Thursday",
     "Friday",
     "Saturday",
-  ]
+  ];
 
   const renderTableHeaders = () => {
     return daysOfWeek.map((day, index) => (
@@ -25,12 +25,12 @@ export const WeekHeader = () => {
           {day.slice(0, 3)}
         </span>
       </th>
-    ))
-  }
+    ));
+  };
 
   return (
     <thead>
       <tr>{renderTableHeaders()}</tr>
     </thead>
-  )
-}
+  );
+};
