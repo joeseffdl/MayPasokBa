@@ -51,7 +51,7 @@ export const WeekCalendar: React.FC = () => {
     {
       subject: "Trends in Software Development Process",
       startTime: "12:00",
-      endTime: "2:00",
+      endTime: "14:00",
       dayOfWeek: 2,
     },
     {
@@ -60,11 +60,14 @@ export const WeekCalendar: React.FC = () => {
       endTime: "6:00",
       dayOfWeek: 2,
     },
-    { subject: "CPE Practice and Design 2", startTime: "6:00", endTime: "8:00", dayOfWeek: 2 },
+    { subject: "CPE Practice and Design 2", startTime: "18:00", endTime: "20:00", dayOfWeek: 2 },
 
-    { subject: "Science", startTime: "13:00", endTime: "14:00", dayOfWeek: 2 },
-    { subject: "History", startTime: "9:00", endTime: "10:00", dayOfWeek: 3 },
-    { subject: "PE", startTime: "14:00", endTime: "15:00", dayOfWeek: 4 },
+    { subject: "CPE Practice and Design 2", startTime: "19:30", endTime: "21:00", dayOfWeek: 3 },
+    { subject: "Visual Arts", startTime: "16:30", endTime: "19:30", dayOfWeek: 3 },
+    { subject: "CPE Practice and Design 2", startTime: "7:30", endTime: "9:00", dayOfWeek: 5 },
+    { subject: "Field Study and Seminars", startTime: "10:30", endTime: "13:00", dayOfWeek: 5 },
+    { subject: "Emerging Technologies", startTime: "14:00", endTime: "17:00", dayOfWeek: 5 },
+    { subject: "Embedded Systems", startTime: "17:00", endTime: "21:00", dayOfWeek: 5 },
   ];
 
   const getRowSpan = (startTime: string, endTime: string) => {
@@ -75,36 +78,36 @@ export const WeekCalendar: React.FC = () => {
 
   return (
     <div className="container mx-auto">
-      <table className="table-auto w-full">
-        <thead>
+      <table className="table-auto w-full bg-white shadow-md rounded-lg overflow-hidden">
+        <thead className="bg-gray-200 text-gray-600 uppercase">
           <tr>
-            <th></th>
+            <th className="text-center px-4 py-3"></th>
             {DAYS_OF_WEEK.map((day) => (
-              <th className="text-center font-bold" key={day}>
+              <th className="text-center px-4 py-3" key={day}>
                 {day}
               </th>
             ))}
           </tr>
         </thead>
-        <tbody>
+        <tbody className="text-gray-600 divide-y divide-gray-100">
           {TIME_SLOTS.map((time, index) => (
             <tr key={time}>
-              <td className="py-2">{time}</td>
+              <td className="text-center px-4 py-3 font-semibold">{time}</td>
               {DAYS_OF_WEEK.map((day, dayIndex) => {
                 const item = schedule.find(
                   (item) => item.startTime === time && item.dayOfWeek === dayIndex
                 );
                 return (
                   <td
-                    className={`p-2 rounded-lg ${item ? "bg-blue-200" : ""}`}
+                    className={`px-4 rounded-lg ${item ? "bg-gray-200" : "bg-white"}`}
                     key={dayIndex}
                     colSpan={1}
                     rowSpan={item ? getRowSpan(item.startTime, item.endTime) : 1}
                   >
                     {item && (
                       <>
-                        <p className="font-bold">{item.subject}</p>
-                        <p>
+                        <p className="font-semibold text-center">{item.subject}</p>
+                        <p className="text-sm text-center">
                           {item.startTime} - {item.endTime}
                         </p>
                       </>
