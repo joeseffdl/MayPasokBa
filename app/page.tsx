@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { Inter } from "next/font/google";
-import { Calendar, Event, WeekCalendar, WeekCalendarModal } from "./";
+import { Calendar, Event, WeekCalendar, WeekCalendarView } from "./"
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -11,7 +11,7 @@ export default function Home() {
         May F2F Ba?!?
       </div>
       <div className="flex gap-10">
-        <div className="w-1/5 flex flex-col gap-5">
+        <div className="hidden w-1/5 xl:flex flex-col gap-5">
           <div className="h-fit">
             <Calendar />
           </div>
@@ -19,11 +19,11 @@ export default function Home() {
             <Event />
           </div>
         </div>
-        <div className="w-full">
-          <WeekCalendar />
-          {/* <WeekCalendarModal /> */}
+        <div className=" w-full">
+          {/* <WeekCalendar /> */}
+          <WeekCalendarView />
         </div>
       </div>
     </main>
-  );
+  )
 }
