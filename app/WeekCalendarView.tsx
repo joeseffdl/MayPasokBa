@@ -74,7 +74,7 @@ export const WeekCalendarView = () => {
                         className="relative flex justify-center"
                       >
                         <div
-                          className="border border-slate-500 text-xs absolute rounded-xl top-0 w-full bg-blue-300  text-center p-2 flex items-center"
+                          className="border border-slate-500 text-xs absolute rounded-xl top-0 w-full bg-blue-300 text-center p-2 flex items-center justify-center"
                           style={style}
                         >
                           {subject}
