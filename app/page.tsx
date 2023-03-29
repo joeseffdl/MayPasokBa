@@ -6,7 +6,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
   return (
-    <main className={`bg-orange-200 min-h-screen flex flex-col p-10 gap-5`}>
+    <main className={`relative bg-orange-200 min-h-screen flex flex-col p-10 gap-5`}>
       <div className="uppercase font-bold text-3xl text-center">
         May F2F Ba?!?
       </div>
