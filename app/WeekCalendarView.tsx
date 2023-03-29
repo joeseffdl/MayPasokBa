@@ -40,8 +40,7 @@ export const WeekCalendarView = () => {
     }))
     setModalState(true)
   }
-  console.log("Selected",selectedSchedule)
-  console.log("Modified",modifiedEvents)
+  
   return (
     <div className="hidden lg:block overflow-hidden">
       <table className="table-fixed bg-gray-100 p-5 border-gray-200 shadow-md rounded-lg w-full">

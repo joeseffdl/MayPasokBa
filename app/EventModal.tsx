@@ -10,37 +10,57 @@ const statusOptions = [
   { value: "No Classes", label: "No Classes" },
 ]
 
-type SetModifiedEventsProps = React.Dispatch<React.SetStateAction<scheduleProps[]>>
+type SetModifiedEventsProps = React.Dispatch<
+  React.SetStateAction<scheduleProps[]>
+>
 interface ModalProps extends scheduleProps {
-    setSelectedSchedule: {
-        (selectedSchedule: scheduleProps): void
+  setSelectedSchedule: {
+    (selectedSchedule: scheduleProps): void
   }
-    setModalState: (state: boolean) => void
-    setModifiedEvents: SetModifiedEventsProps
+  setModalState: (state: boolean) => void
+  setModifiedEvents: SetModifiedEventsProps
 }
 
-export const EventModal = ({id,status,subject,startTime,endTime,setSelectedSchedule,setModalState,setModifiedEvents}: ModalProps) => {
-    function handleChange(e: React.ChangeEvent<HTMLSelectElement>) {
-        const { value } = e.target
-        setSelectedSchedule(
-            {
-                id,
-                status: value,
-                subject,
-                startTime,
-                endTime,
-            }    
-        )
-    }
-    
-    function saveSchedule(e: React.FormEvent<HTMLFormElement>) {
-      e.preventDefault()
-      setModifiedEvents((prev: scheduleProps[]) => [
-        ...prev,
-        { id, status, subject, startTime, endTime },
-      ])
-      setModalState(false)
-    }
+export const EventModal = ({
+  id,
+  status,
+  subject,
+  startTime,
+  endTime,
+  setSelectedSchedule,
+  setModalState,
+  setModifiedEvents,
+}: ModalProps) => {
+  function handleChange(e: React.ChangeEvent<HTMLSelectElement>) {
+    const { value } = e.target
+    setSelectedSchedule({
+      id,
+      status: value,
+      subject,
+      startTime,
+      endTime,
+    })
+  }
+
+  function saveSchedule(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    setModifiedEvents((prev: scheduleProps[]) => {
+      const index = prev.findIndex((item) => item.id === id)
+      if (index !== -1) {
+        const updatedEvent = {
+          ...prev[index],
+          status,
+        }
+        const updatedModifiedEvent = [...prev]
+        updatedModifiedEvent[index] = updatedEvent
+        return updatedModifiedEvent
+      } else {
+        const newEvent = { id, status, subject, startTime, endTime }
+        return [...prev, newEvent]
+      }
+    })
+    setModalState(false)
+  }
 
   return (
     <div
@@ -66,7 +86,9 @@ export const EventModal = ({id,status,subject,startTime,endTime,setSelectedSched
                 {status}
               </option>
               {statusOptions.map((optStat) => (
-                <option key={optStat.label} value={optStat.value}>{optStat.label}</option>
+                <option key={optStat.label} value={optStat.value}>
+                  {optStat.label}
+                </option>
               ))}
             </select>
           </div>
