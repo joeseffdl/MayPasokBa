@@ -10,12 +10,13 @@ const statusOptions = [
   { value: "No Classes", label: "No Classes" },
 ]
 
+type SetModifiedEventsProps = React.Dispatch<React.SetStateAction<scheduleProps[]>>
 interface ModalProps extends scheduleProps {
     setSelectedSchedule: {
         (selectedSchedule: scheduleProps): void
   }
     setModalState: (state: boolean) => void
-    setModifiedEvents: (modifiedEvents: scheduleProps[]) => void
+    setModifiedEvents: SetModifiedEventsProps
 }
 
 export const EventModal = ({id,status,subject,startTime,endTime,setSelectedSchedule,setModalState,setModifiedEvents}: ModalProps) => {
@@ -33,15 +34,12 @@ export const EventModal = ({id,status,subject,startTime,endTime,setSelectedSched
     }
     
     function saveSchedule(e: React.FormEvent<HTMLFormElement>) {
-        e.preventDefault()
-        setModifiedEvents((prev) => [...prev,{
-          id,
-          status,
-          subject,
-          startTime,
-          endTime,
-        }])
-        setModalState(false)
+      e.preventDefault()
+      setModifiedEvents((prev: scheduleProps[]) => [
+        ...prev,
+        { id, status, subject, startTime, endTime },
+      ])
+      setModalState(false)
     }
 
   return (
