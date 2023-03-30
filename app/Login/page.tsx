@@ -1,6 +1,6 @@
 "use client";
 
-import { GoogleAuthProvider, signInWithRedirect } from "firebase/auth";
+import { GoogleAuthProvider, signInWithPopup, signInWithRedirect } from "firebase/auth";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
@@ -17,7 +17,7 @@ export default function Login() {
   const googleProvider = new GoogleAuthProvider();
   const GoogleLogin = async () => {
     try {
-      const result = await signInWithRedirect(auth, googleProvider);
+      const result = await signInWithPopup(auth, googleProvider);
       if (user) {
         toast.success("Successfully signed in with your Google account! 🎉");
         router.push("/");
@@ -29,6 +29,7 @@ export default function Login() {
       console.log(err);
     }
   };
+
   useEffect(() => {
     if (user) {
       router.push("/");
