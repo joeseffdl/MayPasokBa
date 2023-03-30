@@ -1,4 +1,11 @@
+import { ToasterComponent } from "./ToasterComponent";
 import "./globals.css";
+import { Rubik } from "next/font/google";
+
+const rubik = Rubik({
+  subsets: ["latin"],
+  variable: "--font-rubik",
+});
 
 export const metadata = {
   title: "May F2F ba?!?",
@@ -13,7 +20,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body className={`${rubik.variable}`}>
+        <ToasterComponent>{children}</ToasterComponent>
+      </body>
     </html>
   );
 }

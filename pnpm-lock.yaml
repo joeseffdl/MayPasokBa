@@ -1,18 +1,22 @@
 lockfileVersion: 5.4
 
 specifiers:
+  '@types/lodash': ^4.14.192
   '@types/node': 18.15.7
   '@types/react': 18.0.28
   '@types/react-dom': 18.0.11
   autoprefixer: ^10.4.14
   date-fns: ^2.29.3
   firebase: ^9.18.0
+  lodash: ^4.17.21
   next: 13.2.4
   postcss: ^8.4.21
   prettier-plugin-tailwindcss: ^0.2.5
   react: 18.2.0
   react-dom: 18.2.0
   react-firebase-hooks: ^5.1.1
+  react-hot-toast: ^2.4.0
+  react-icons: ^4.8.0
   tailwindcss: ^3.2.7
   typescript: 5.0.2
 
@@ -22,13 +26,17 @@ dependencies:
   '@types/react-dom': 18.0.11
   date-fns: 2.29.3
   firebase: 9.18.0
+  lodash: 4.17.21
   next: 13.2.4_biqbaboplfbrettd7655fr4n2y
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
   react-firebase-hooks: 5.1.1_cio6j2hlcukevw4aig7wk3q6vm
+  react-hot-toast: 2.4.0_owo25xnefcwdq3zjgtohz6dbju
+  react-icons: 4.8.0_react@18.2.0
   typescript: 5.0.2
 
 devDependencies:
+  '@types/lodash': 4.14.192
   autoprefixer: 10.4.14_postcss@8.4.21
   postcss: 8.4.21
   prettier-plugin-tailwindcss: 0.2.5_prettier@2.8.7
@@ -708,6 +716,10 @@ packages:
       tslib: 2.5.0
     dev: false
 
+  /@types/lodash/4.14.192:
+    resolution: {integrity: sha512-km+Vyn3BYm5ytMO13k9KTp27O75rbQ0NFw+U//g+PX7VZyjCioXaRFisqSIJRECljcTv73G3i6BpglNGHgUQ5A==}
+    dev: true
+
   /@types/long/4.0.2:
     resolution: {integrity: sha512-MqTGEo5bj5t157U6fA/BiDynNkn0YknVdh48CMPkTSpFTVmvao5UQmm7uEF6xBEo7qIMAlY/JSleYaE6VOdpaA==}
     dev: false
@@ -1013,6 +1025,14 @@ packages:
       is-glob: 4.0.3
     dev: true
 
+  /goober/2.1.12_csstype@3.1.1:
+    resolution: {integrity: sha512-yXHAvO08FU1JgTXX6Zn6sYCUFfB/OJSX8HHjDSgerZHZmFKAb08cykp5LBw5QnmyMcZyPRMqkdyHUSSzge788Q==}
+    peerDependencies:
+      csstype: ^3.0.10
+    dependencies:
+      csstype: 3.1.1
+    dev: false
+
   /has/1.0.3:
     resolution: {integrity: sha512-f2dvO0VU6Oej7RkWJGrehjbzMAjFp5/VKPp5tTpWIV4JHHZK1/BxbFRtf/siA2SWTe09caDmVtYYzWEIbBS4zw==}
     engines: {node: '>= 0.4.0'}
@@ -1074,6 +1094,10 @@ packages:
 
   /lodash.camelcase/4.3.0:
     resolution: {integrity: sha512-TwuEnCnxbc3rAvhf/LbG7tJUDzhqXyFnv3dtzLOPgCG/hODL7WFnsbwktkD7yUV0RrreP/l1PALq/YSg6VvjlA==}
+    dev: false
+
+  /lodash/4.17.21:
+    resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
     dev: false
 
   /long/4.0.0:
@@ -1413,6 +1437,28 @@ packages:
       react: '>= 16.8.0'
     dependencies:
       firebase: 9.18.0
+      react: 18.2.0
+    dev: false
+
+  /react-hot-toast/2.4.0_owo25xnefcwdq3zjgtohz6dbju:
+    resolution: {integrity: sha512-qnnVbXropKuwUpriVVosgo8QrB+IaPJCpL8oBI6Ov84uvHZ5QQcTp2qg6ku2wNfgJl6rlQXJIQU5q+5lmPOutA==}
+    engines: {node: '>=10'}
+    peerDependencies:
+      react: '>=16'
+      react-dom: '>=16'
+    dependencies:
+      goober: 2.1.12_csstype@3.1.1
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+    transitivePeerDependencies:
+      - csstype
+    dev: false
+
+  /react-icons/4.8.0_react@18.2.0:
+    resolution: {integrity: sha512-N6+kOLcihDiAnj5Czu637waJqSnwlMNROzVZMhfX68V/9bu9qHaMIJC4UdozWoOk57gahFCNHwVvWzm0MTzRjg==}
+    peerDependencies:
+      react: '*'
+    dependencies:
       react: 18.2.0
     dev: false
 
