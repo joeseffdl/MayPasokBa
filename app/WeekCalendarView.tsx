@@ -5,11 +5,24 @@ import { useState, useMemo } from "react";
 import { scheduleProps } from "@/utils/types";
 import { DAYS_OF_WEEK, TimeDifference, scheduleDataObject } from "@/utils/";
 import { EventModal } from "./EventModal";
+import {
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  serverTimestamp,
+} from "firebase/firestore";
+import { useRouter } from "next/navigation";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth, db } from "@/utils/firebase";
+import { toast } from "react-hot-toast";
 
 export const WeekCalendarView = () => {
+  const router = useRouter();
+  const [user, loading] = useAuthState(auth);
   const [selectedSchedule, setSelectedSchedule] = useState<scheduleProps>({
     id: 0,
-    status: "No Information",
+    status: "",
     subject: "",
     startTime: "",
     endTime: "",
@@ -35,10 +48,48 @@ export const WeekCalendarView = () => {
     setModalState(true);
   }
 
+  async function saveEvent() {
+    if (!user) return router.push("/Login");
+    else {
+      const scheduleRef = collection(db, "schedules");
+      await addDoc(scheduleRef, {
+        createdOn: serverTimestamp(),
+        user: user.uid,
+        username: user.displayName,
+        avatar: user.photoURL,
+        ...modifiedEvents,
+      });
+    }
+    toast.success("Schedule saved successfully 🚀");
+  }
+
   return (
     <div className="hidden lg:block overflow-hidden rounded-lg shadow-lg">
       <table className="table-fixed bg-slate-100 p-5 border border-slate-300 shadow-md rounded-lg w-full">
         <thead>
+          <tr className="border">
+            <th className="w-16 h-10 p-2 border" />
+            <th />
+            <th />
+            <th />
+            <th />
+            <th />
+            <th />
+            <th className="p-2 flex justify-center items-center">
+              <button
+                disabled={
+                  modifiedEvents.length == 0 ||
+                  modifiedEvents.every(
+                    (event) => event.status === "No Information"
+                  )
+                }
+                className={`disabled:cursor-not-allowed disabled:opacity-50 bg-indigo-700 h-10 text-center text-white text-sm rounded-lg font-semibold px-4 py-2`}
+                onClick={saveEvent}
+              >
+                {modifiedEvents.length > 1 ? "Save Events" : "Save Event"}
+              </button>
+            </th>
+          </tr>
           <tr>
             <th className="w-16"></th>
             {DAYS_OF_WEEK.map((day) => (
@@ -55,9 +106,9 @@ export const WeekCalendarView = () => {
           {Array(34)
             .fill(null)
             .map((_, i) => {
-              const hour = Math.floor(i / 2) + 7;
-              const minute = i % 2 === 0 ? "00" : "30";
-              const time = `${hour.toString().padStart(2, "0")}:${minute}`;
+              const hour = Math.floor(i / 2) + 7
+              const minute = i % 2 === 0 ? "00" : "30"
+              const time = `${hour.toString().padStart(2, "0")}:${minute}`
 
               return (
                 <>
@@ -66,23 +117,23 @@ export const WeekCalendarView = () => {
                       {time}
                     </td>
                     {DAYS_OF_WEEK.map((day) => {
-                      const events: scheduleProps[] = scheduleData[day] || [];
+                      const events: scheduleProps[] = scheduleData[day] || []
                       const event = events.find(
                         (e: scheduleProps) => e.startTime === time
-                      );
+                      )
                       if (!event) {
                         return (
                           <td
                             key={`${day}-${time}`}
                             className="h-[2.5rem] border border-gray-200"
                           />
-                        );
+                        )
                       }
-                      const { startTime, endTime, subject, status, id } = event;
-                      const duration = TimeDifference(startTime, endTime);
+                      const { startTime, endTime, subject, status, id } = event
+                      const duration = TimeDifference(startTime, endTime)
                       const style: React.CSSProperties = {
                         height: `${(duration as number) * 5}rem`,
-                      };
+                      }
                       return (
                         <td
                           key={`${day}-${time}-${subject}`}
@@ -172,7 +223,7 @@ export const WeekCalendarView = () => {
                                 >
                                   {startTime} - {endTime}
                                 </div>
-                                <div className="flex items-center font-semibold justify-center h-full uppercase text-slate-700">
+                                <div className="flex items-center font-semibold justify-center h-full uppercase text-slate-700 text-[10px] xl:text-xs">
                                   {modifiedEvents.find((e) => e.id === id)
                                     ?.status ?? "No Information"}
                                 </div>
@@ -202,22 +253,23 @@ export const WeekCalendarView = () => {
                             </div>
                           </div>
                         </td>
-                      );
+                      )
                     })}
                   </tr>
                 </>
-              );
+              )
             })}
         </tbody>
       </table>
       {modalState && (
         <EventModal
           {...selectedSchedule}
+          modifiedEvents={modifiedEvents}
           setSelectedSchedule={setSelectedSchedule}
           setModalState={setModalState}
           setModifiedEvents={setModifiedEvents}
         />
       )}
     </div>
-  );
+  )
 };

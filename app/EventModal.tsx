@@ -1,8 +1,10 @@
 "use client";
 
 import { scheduleProps } from "@/utils/types";
+import { toast } from "react-hot-toast";
 
 const statusOptions = [
+  { value: "No Information", label: "No Information" },
   { value: "Online", label: "Online" },
   { value: "Face to Face", label: "Face to Face" },
   { value: "Asynchronous", label: "Asynchronous" },
@@ -18,6 +20,7 @@ interface ModalProps extends scheduleProps {
   };
   setModalState: (state: boolean) => void;
   setModifiedEvents: SetModifiedEventsProps;
+  modifiedEvents: scheduleProps[];
 }
 
 export const EventModal = ({
@@ -29,6 +32,7 @@ export const EventModal = ({
   setSelectedSchedule,
   setModalState,
   setModifiedEvents,
+  modifiedEvents,
 }: ModalProps) => {
   function handleChange(e: React.ChangeEvent<HTMLSelectElement>) {
     const { value } = e.target;
@@ -39,32 +43,60 @@ export const EventModal = ({
       startTime,
       endTime,
     });
-  }
-
-  function saveSchedule(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
     setModifiedEvents((prev: scheduleProps[]) => {
       const index = prev.findIndex((item) => item.id === id);
       if (index !== -1) {
         const updatedEvent = {
           ...prev[index],
-          status,
+          status: value,
         };
         const updatedModifiedEvent = [...prev];
         updatedModifiedEvent[index] = updatedEvent;
         return updatedModifiedEvent;
       } else {
-        const newEvent = { id, status, subject, startTime, endTime };
+        const newEvent = { id, status: value, subject, startTime, endTime };
         return [...prev, newEvent];
       }
     });
+  }
+
+  function closedWithoutSaving() {
+    setModifiedEvents((prev: scheduleProps[]) => {
+      const index = prev.findIndex((item) => item.id === id)
+      if (index !== -1) {
+        const updatedEvent = {
+          ...prev[index],
+          status:
+            prev[index].status !== "No Information"
+              ? prev[index].status
+              : "No Information",
+        }
+        const updatedModifiedEvent = [...prev]
+        updatedModifiedEvent[index] = updatedEvent
+        return updatedModifiedEvent
+      } else {
+        const newEvent = {
+          id,
+          status: "No Information",
+          subject,
+          startTime,
+          endTime,
+        }
+        return [...prev, newEvent]
+      }                                                        
+    })
+    setModalState(false)
+  }
+
+  async function saveSchedule(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    toast.success("Schedule updated 📆");
     setModalState(false);
   }
 
   return (
     <div
       className="absolute top-0 left-0 w-full bg-gray-500/50 h-full "
-      onClick={() => setModalState(false)}
     >
       <div className="h-screen flex justify-center items-center">
         <form
@@ -75,10 +107,10 @@ export const EventModal = ({
           <div className="w-full h-full flex flex-col justify-between rounded-xl">
             <div className="flex flex-col gap-2 p-5">
               <div className="relative flex justify-between">
-                <h2 className="text-lg font-semibold">Edit Schedule</h2>
+                <h2 className="text-lg font-bold">Edit Schedule</h2>
                 <span
                   className="absolute transform -translate-y-1/2 right-0"
-                  onClick={() => setModalState(false)}
+                  onClick={() => closedWithoutSaving()}
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -91,16 +123,18 @@ export const EventModal = ({
                   </svg>
                 </span>
               </div>
-              <div className="flex justify-between">
-                <label>{subject}</label>
+              <div className="flex flex-col 2xl:flex-row text-sm 2xl:text-base justify-between gap-1">
+                <label className="font-semibold">{subject}</label>
                 <span>
                   {startTime} - {endTime}
                 </span>
               </div>
-              <div className=" flex justify-between">
+              <div className=" flex justify-between text-sm 2xl:text-base">
                 <label>Status</label>
-                <select onChange={handleChange}>
-                  <option defaultValue={status}>{status}</option>
+                <select
+                  value={modifiedEvents.find((e) => e.id === id)?.status}
+                  onChange={handleChange}
+                >
                   {statusOptions.map((optStat) => (
                     <option key={optStat.label} value={optStat.value}>
                       {optStat.label}
@@ -114,7 +148,7 @@ export const EventModal = ({
                 className=" w-fit px-4 py-2 bg-blue-500 rounded-lg text-sm text-white font-semibold"
                 type="submit"
               >
-                Save Changes
+                Change Schedule
               </button>
             </div>
           </div>
