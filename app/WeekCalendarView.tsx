@@ -1,14 +1,18 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 
 import { scheduleProps } from "@/utils/types";
-import { DAYS_OF_WEEK, TimeDifference, scheduleDataObject } from "@/utils/";
+import { CompareArraysOfObjects, DAYS_OF_WEEK, TimeDifference, SCHEDULE_DATA_OBJECT } from "@/utils/";
 import { EventModal } from "./EventModal";
 import {
   addDoc,
   collection,
   doc,
+  query,
+  limit,
+  orderBy,
+  onSnapshot,
   getDoc,
   serverTimestamp,
 } from "firebase/firestore";
@@ -20,6 +24,8 @@ import { toast } from "react-hot-toast";
 export const WeekCalendarView = () => {
   const router = useRouter();
   const [user, loading] = useAuthState(auth);
+
+  const [firebaseData, setFirebaseData] = useState<any>([])
   const [selectedSchedule, setSelectedSchedule] = useState<scheduleProps>({
     id: 0,
     status: "",
@@ -28,8 +34,9 @@ export const WeekCalendarView = () => {
     endTime: "",
   });
   const [modifiedEvents, setModifiedEvents] = useState<scheduleProps[]>([]);
+  const [initialEvents, setInitialEvents] = useState<scheduleProps[]>([]);
   const [modalState, setModalState] = useState(false);
-  const scheduleData = useMemo(() => scheduleDataObject, []);
+  const scheduleData = useMemo(() => SCHEDULE_DATA_OBJECT, []);
 
   function openModalInformation({
     id,
@@ -48,7 +55,7 @@ export const WeekCalendarView = () => {
     setModalState(true);
   }
 
-  async function saveEvent() {
+  async function saveEvents() {
     if (!user) return router.push("/Login");
     else {
       const scheduleRef = collection(db, "schedules");
@@ -57,11 +64,38 @@ export const WeekCalendarView = () => {
         user: user.uid,
         username: user.displayName,
         avatar: user.photoURL,
-        ...modifiedEvents,
+        modifiedEvents,
       });
     }
     toast.success("Schedule saved successfully 🚀");
   }
+
+  function clearEvents() {
+    setModifiedEvents([]);
+    toast.success("Schedule cleared 📆");
+  }
+
+  const getScheduleData = async () => {
+    try {
+      const docRef = collection(db, "schedules")
+      const q = query(docRef, orderBy("createdOn", "desc"), limit(1))
+      const unsubscribe = await onSnapshot(q, (querySnapshot) => {
+        const data = querySnapshot.docs.map((doc) => {
+          setFirebaseData(doc.data())
+          setModifiedEvents(doc.data().modifiedEvents)
+          setInitialEvents(doc.data().modifiedEvents)
+        })
+      }) 
+      return unsubscribe
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  useEffect(() => {
+    getScheduleData()
+  }, []);
+  
 
   return (
     <div className="hidden lg:block overflow-hidden rounded-lg shadow-lg">
@@ -74,17 +108,26 @@ export const WeekCalendarView = () => {
             <th />
             <th />
             <th />
-            <th />
-            <th className="p-2 flex justify-center items-center">
+            <th className="p-2">
+              <button
+                disabled={modifiedEvents.length == 0}
+                className={`disabled:cursor-not-allowed disabled:opacity-50 bg-indigo-700 h-10 text-center text-white text-sm rounded-lg font-semibold px-4 py-2`}
+                onClick={clearEvents}
+              >
+                {modifiedEvents.length >= 1 && "Clear Events" || "Clear Event"}
+              </button>
+            </th>
+            <th className="p-2">
               <button
                 disabled={
                   modifiedEvents.length == 0 ||
                   modifiedEvents.every(
                     (event) => event.status === "No Information"
-                  )
+                  ) ||
+                  CompareArraysOfObjects(initialEvents, modifiedEvents)
                 }
                 className={`disabled:cursor-not-allowed disabled:opacity-50 bg-indigo-700 h-10 text-center text-white text-sm rounded-lg font-semibold px-4 py-2`}
-                onClick={saveEvent}
+                onClick={saveEvents}
               >
                 {modifiedEvents.length > 1 ? "Save Events" : "Save Event"}
               </button>
@@ -111,39 +154,39 @@ export const WeekCalendarView = () => {
               const time = `${hour.toString().padStart(2, "0")}:${minute}`
 
               return (
-                  <tr className="relative select-none h-5 " key={time}>
-                    <td className="absolute transform -translate-y-1/2 flex justify-end px-2 items-center text-sm w-16">
-                      {time}
-                    </td>
-                    {DAYS_OF_WEEK.map((day) => {
-                      const events: scheduleProps[] = scheduleData[day] || []
-                      const event = events.find(
-                        (e: scheduleProps) => e.startTime === time
-                      )
-                      if (!event) {
-                        return (
-                          <td
-                            key={`${day}-${time}`}
-                            className="h-[2.5rem] border border-gray-200"
-                          />
-                        )
-                      }
-                      const { startTime, endTime, subject, status, id } = event
-                      const duration = TimeDifference(startTime, endTime)
-                      const style: React.CSSProperties = {
-                        height: `${(duration as number) * 5}rem`,
-                      }
+                <tr className="relative select-none h-5 " key={time}>
+                  <td className="absolute transform -translate-y-1/2 flex justify-end px-2 items-center text-sm w-16">
+                    {time}
+                  </td>
+                  {DAYS_OF_WEEK.map((day) => {
+                    const events: scheduleProps[] = scheduleData[day] || []
+                    const event = events.find(
+                      (e: scheduleProps) => e.startTime === time
+                    )
+                    if (!event) {
                       return (
                         <td
-                          key={`${day}-${time}-${subject}`}
-                          className="relative flex justify-center items-start cursor-pointer"
+                          key={`${day}-${time}`}
+                          className="h-[2.5rem] border border-gray-200"
+                        />
+                      )
+                    }
+                    const { startTime, endTime, subject, status, id } = event
+                    const duration = TimeDifference(startTime, endTime)
+                    const style: React.CSSProperties = {
+                      height: `${(duration as number) * 5}rem`,
+                    }
+                    return (
+                      <td
+                        key={`${day}-${time}-${subject}`}
+                        className="relative flex justify-center items-start cursor-pointer"
+                      >
+                        <div
+                          className="absolute w-full transparent p-1"
+                          style={style}
                         >
                           <div
-                            className="absolute w-full transparent p-1"
-                            style={style}
-                          >
-                            <div
-                              className={`text-xs rounded-lg w-full h-full 
+                            className={`text-xs rounded-lg w-full h-full 
                     ${
                       modifiedEvents.find((e) => e.id === id)?.status ===
                       "No Information"
@@ -163,98 +206,98 @@ export const WeekCalendarView = () => {
                         : "hover:bg-blue-200 bg-blue-100"
                     } 
                     p-2 flex items-center justify-center`}
+                          >
+                            <div
+                              className={`${
+                                modalState ? "-z-0" : "z-10"
+                              } w-full h-full flex flex-col gap-1 `}
+                              onClick={() =>
+                                openModalInformation({
+                                  id,
+                                  status,
+                                  subject,
+                                  startTime,
+                                  endTime,
+                                })
+                              }
                             >
                               <div
                                 className={`${
-                                  modalState ? "-z-0" : "z-10"
-                                } w-full h-full flex flex-col gap-1 `}
-                                onClick={() =>
-                                  openModalInformation({
-                                    id,
-                                    status,
-                                    subject,
-                                    startTime,
-                                    endTime,
-                                  })
-                                }
+                                  modifiedEvents.find((e) => e.id === id)
+                                    ?.status === "No Information"
+                                    ? "text-blue-800"
+                                    : modifiedEvents.find((e) => e.id === id)
+                                        ?.status === "Online"
+                                    ? "text-green-800"
+                                    : modifiedEvents.find((e) => e.id === id)
+                                        ?.status === "Face to Face"
+                                    ? "text-orange-800"
+                                    : modifiedEvents.find((e) => e.id === id)
+                                        ?.status === "Asynchronous"
+                                    ? "text-yellow-800"
+                                    : modifiedEvents.find((e) => e.id === id)
+                                        ?.status === "No Classes"
+                                    ? "text-red-800"
+                                    : "text-blue-800"
+                                } font-bold`}
                               >
-                                <div
-                                  className={`${
-                                    modifiedEvents.find((e) => e.id === id)
-                                      ?.status === "No Information"
-                                      ? "text-blue-800"
-                                      : modifiedEvents.find((e) => e.id === id)
-                                          ?.status === "Online"
-                                      ? "text-green-800"
-                                      : modifiedEvents.find((e) => e.id === id)
-                                          ?.status === "Face to Face"
-                                      ? "text-orange-800"
-                                      : modifiedEvents.find((e) => e.id === id)
-                                          ?.status === "Asynchronous"
-                                      ? "text-yellow-800"
-                                      : modifiedEvents.find((e) => e.id === id)
-                                          ?.status === "No Classes"
-                                      ? "text-red-800"
-                                      : "text-blue-800"
-                                  } font-bold`}
-                                >
-                                  {subject}
-                                </div>
-                                <div
-                                  className={`${
-                                    modifiedEvents.find((e) => e.id === id)
-                                      ?.status === "No Information"
-                                      ? "text-blue-400"
-                                      : modifiedEvents.find((e) => e.id === id)
-                                          ?.status === "Online"
-                                      ? "text-green-400"
-                                      : modifiedEvents.find((e) => e.id === id)
-                                          ?.status === "Face to Face"
-                                      ? "text-orange-400"
-                                      : modifiedEvents.find((e) => e.id === id)
-                                          ?.status === "Asynchronous"
-                                      ? "text-yellow-400"
-                                      : modifiedEvents.find((e) => e.id === id)
-                                          ?.status === "No Classes"
-                                      ? "text-red-400"
-                                      : "text-blue-400"
-                                  }`}
-                                >
-                                  {startTime} - {endTime}
-                                </div>
-                                <div className="flex items-center font-semibold justify-center h-full uppercase text-slate-700 text-[10px] xl:text-xs">
-                                  {modifiedEvents.find((e) => e.id === id)
-                                    ?.status ?? "No Information"}
-                                </div>
-                                <div
-                                  className={`${
-                                    modifiedEvents.find((e) => e.id === id)
-                                      ?.status === "No Information"
-                                      ? "text-blue-600"
-                                      : modifiedEvents.find((e) => e.id === id)
-                                          ?.status === "Online"
-                                      ? "text-green-600"
-                                      : modifiedEvents.find((e) => e.id === id)
-                                          ?.status === "Face to Face"
-                                      ? "text-orange-600"
-                                      : modifiedEvents.find((e) => e.id === id)
-                                          ?.status === "Asynchronous"
-                                      ? "text-yellow-600"
-                                      : modifiedEvents.find((e) => e.id === id)
-                                          ?.status === "No Classes"
-                                      ? "text-red-600"
-                                      : "text-blue-600"
-                                  } flex justify-end`}
-                                >
-                                  {duration} hours
-                                </div>
+                                {subject}
+                              </div>
+                              <div
+                                className={`${
+                                  modifiedEvents.find((e) => e.id === id)
+                                    ?.status === "No Information"
+                                    ? "text-blue-400"
+                                    : modifiedEvents.find((e) => e.id === id)
+                                        ?.status === "Online"
+                                    ? "text-green-400"
+                                    : modifiedEvents.find((e) => e.id === id)
+                                        ?.status === "Face to Face"
+                                    ? "text-orange-400"
+                                    : modifiedEvents.find((e) => e.id === id)
+                                        ?.status === "Asynchronous"
+                                    ? "text-yellow-400"
+                                    : modifiedEvents.find((e) => e.id === id)
+                                        ?.status === "No Classes"
+                                    ? "text-red-400"
+                                    : "text-blue-400"
+                                }`}
+                              >
+                                {startTime} - {endTime}
+                              </div>
+                              <div className="flex items-center font-semibold justify-center h-full uppercase text-slate-700 text-[10px] xl:text-xs">
+                                {modifiedEvents.find((e) => e.id === id)
+                                  ?.status ?? "No Information"}
+                              </div>
+                              <div
+                                className={`${
+                                  modifiedEvents.find((e) => e.id === id)
+                                    ?.status === "No Information"
+                                    ? "text-blue-600"
+                                    : modifiedEvents.find((e) => e.id === id)
+                                        ?.status === "Online"
+                                    ? "text-green-600"
+                                    : modifiedEvents.find((e) => e.id === id)
+                                        ?.status === "Face to Face"
+                                    ? "text-orange-600"
+                                    : modifiedEvents.find((e) => e.id === id)
+                                        ?.status === "Asynchronous"
+                                    ? "text-yellow-600"
+                                    : modifiedEvents.find((e) => e.id === id)
+                                        ?.status === "No Classes"
+                                    ? "text-red-600"
+                                    : "text-blue-600"
+                                } flex justify-end`}
+                              >
+                                {duration} hours
                               </div>
                             </div>
                           </div>
-                        </td>
-                      )
-                    })}
-                  </tr>
+                        </div>
+                      </td>
+                    )
+                  })}
+                </tr>
               )
             })}
         </tbody>
