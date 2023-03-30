@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 
 import { scheduleProps } from "@/utils/types";
 import { DAYS_OF_WEEK, TimeDifference, scheduleDataObject } from "@/utils/";
@@ -9,6 +9,10 @@ import {
   addDoc,
   collection,
   doc,
+  query,
+  limit,
+  orderBy,
+  onSnapshot,
   getDoc,
   serverTimestamp,
 } from "firebase/firestore";
@@ -20,6 +24,8 @@ import { toast } from "react-hot-toast";
 export const WeekCalendarView = () => {
   const router = useRouter();
   const [user, loading] = useAuthState(auth);
+
+  const [firebaseData, setFirebaseData] = useState<any>([])
   const [selectedSchedule, setSelectedSchedule] = useState<scheduleProps>({
     id: 0,
     status: "",
@@ -57,11 +63,32 @@ export const WeekCalendarView = () => {
         user: user.uid,
         username: user.displayName,
         avatar: user.photoURL,
-        ...modifiedEvents,
+        modifiedEvents,
       });
     }
     toast.success("Schedule saved successfully 🚀");
   }
+
+  const getScheduleData = async () => {
+    try {
+      const docRef = collection(db, "schedules")
+      const q = query(docRef, orderBy("createdOn", "desc"), limit(1))
+      const unsubscribe = await onSnapshot(q, (querySnapshot) => {
+        const data = querySnapshot.docs.map((doc) => {
+          setFirebaseData(doc.data())
+          setModifiedEvents(doc.data().modifiedEvents)
+        })
+      }) 
+      return unsubscribe
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  useEffect(() => {
+    getScheduleData()
+  }, [modifiedEvents]);
+  
 
   return (
     <div className="hidden lg:block overflow-hidden rounded-lg shadow-lg">
