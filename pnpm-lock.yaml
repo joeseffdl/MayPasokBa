@@ -1,12 +1,14 @@
 lockfileVersion: 5.4
 
 specifiers:
+  '@types/lodash': ^4.14.192
   '@types/node': 18.15.7
   '@types/react': 18.0.28
   '@types/react-dom': 18.0.11
   autoprefixer: ^10.4.14
   date-fns: ^2.29.3
   firebase: ^9.18.0
+  lodash: ^4.17.21
   next: 13.2.4
   postcss: ^8.4.21
   prettier-plugin-tailwindcss: ^0.2.5
@@ -24,6 +26,7 @@ dependencies:
   '@types/react-dom': 18.0.11
   date-fns: 2.29.3
   firebase: 9.18.0
+  lodash: 4.17.21
   next: 13.2.4_biqbaboplfbrettd7655fr4n2y
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
@@ -33,6 +36,7 @@ dependencies:
   typescript: 5.0.2
 
 devDependencies:
+  '@types/lodash': 4.14.192
   autoprefixer: 10.4.14_postcss@8.4.21
   postcss: 8.4.21
   prettier-plugin-tailwindcss: 0.2.5_prettier@2.8.7
@@ -712,6 +716,10 @@ packages:
       tslib: 2.5.0
     dev: false
 
+  /@types/lodash/4.14.192:
+    resolution: {integrity: sha512-km+Vyn3BYm5ytMO13k9KTp27O75rbQ0NFw+U//g+PX7VZyjCioXaRFisqSIJRECljcTv73G3i6BpglNGHgUQ5A==}
+    dev: true
+
   /@types/long/4.0.2:
     resolution: {integrity: sha512-MqTGEo5bj5t157U6fA/BiDynNkn0YknVdh48CMPkTSpFTVmvao5UQmm7uEF6xBEo7qIMAlY/JSleYaE6VOdpaA==}
     dev: false
@@ -1086,6 +1094,10 @@ packages:
 
   /lodash.camelcase/4.3.0:
     resolution: {integrity: sha512-TwuEnCnxbc3rAvhf/LbG7tJUDzhqXyFnv3dtzLOPgCG/hODL7WFnsbwktkD7yUV0RrreP/l1PALq/YSg6VvjlA==}
+    dev: false
+
+  /lodash/4.17.21:
+    resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
     dev: false
 
   /long/4.0.0:

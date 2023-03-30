@@ -1,32 +1,32 @@
-import { scheduleDataProps } from "@/utils/types";
+import { scheduleDataProps } from "@/utils/types"
 
-export const scheduleDataObject: scheduleDataProps = {
+export const SCHEDULE_DATA_OBJECT: scheduleDataProps = {
   Sunday: [],
   Monday: [],
   Tuesday: [
-      {
-        id: 1,
+    {
+      id: 1,
       startTime: "09:00",
       endTime: "11:00",
       subject: "Embedded Systems",
       status: "No Information",
     },
-      {
-        id: 2,
+    {
+      id: 2,
       startTime: "12:00",
       endTime: "14:00",
       subject: "Trends in Software Development Process",
       status: "No Information",
     },
-      {
-        id: 3,
+    {
+      id: 3,
       startTime: "15:00",
       endTime: "18:00",
       subject: "Trends in Software Development Process",
       status: "No Information",
     },
-      {
-        id: 4,
+    {
+      id: 4,
       startTime: "18:00",
       endTime: "20:00",
       subject: "CPE Practice and Design 2",
@@ -34,44 +34,52 @@ export const scheduleDataObject: scheduleDataProps = {
     },
   ],
   Wednesday: [
-      {
-        id: 5,
+    {
+      id: 5,
       startTime: "19:30",
       endTime: "21:00",
       subject: "CPE Practice and Design 2",
       status: "No Information",
     },
   ],
-  Thursday: [{ id: 6,startTime: "16:30", endTime: "19:30", subject: "Visual Arts", status: "No Information" }],
+  Thursday: [
+    {
+      id: 6,
+      startTime: "16:30",
+      endTime: "19:30",
+      subject: "Visual Arts",
+      status: "No Information",
+    },
+  ],
   Friday: [],
   Saturday: [
-      {
-        id: 7,
+    {
+      id: 7,
       startTime: "07:30",
       endTime: "09:00",
-          subject: "CPE Practice and Design 2",
-      status: "No Information"
+      subject: "CPE Practice and Design 2",
+      status: "No Information",
     },
-      {
-        id: 8,
+    {
+      id: 8,
       startTime: "10:30",
       endTime: "13:00",
-        subject: "Field Study and Seminars",
-      status: "No Information"
+      subject: "Field Study and Seminars",
+      status: "No Information",
     },
-      {
-        id: 9,
+    {
+      id: 9,
       startTime: "14:00",
       endTime: "17:00",
-        subject: "Emerging Technologies",
-      status: "No Information"
+      subject: "Emerging Technologies",
+      status: "No Information",
     },
-      {
-        id: 10,
+    {
+      id: 10,
       startTime: "17:00",
       endTime: "21:00",
-        subject: "Embedded Systems",
-      status: "No Information"
+      subject: "Embedded Systems",
+      status: "No Information",
     },
   ],
 }
