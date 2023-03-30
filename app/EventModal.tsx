@@ -89,15 +89,15 @@ export const EventModal = ({
   }
 
   async function saveSchedule(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    toast.success("Schedule updated 📆");
-    setModalState(false);
+      e.preventDefault();
+      if (modifiedEvents.find((e) => e.id === id)?.status !== "No Information" && status !== "No Information") { 
+          toast.success("Schedule updated 📆");
+      }
+      setModalState(false);
   }
 
   return (
-    <div
-      className="absolute top-0 left-0 w-full bg-gray-500/50 h-full "
-    >
+    <div className="absolute top-0 left-0 w-full bg-gray-500/50 h-full ">
       <div className="h-screen flex justify-center items-center">
         <form
           onSubmit={saveSchedule}
@@ -108,7 +108,7 @@ export const EventModal = ({
             <div className="flex flex-col gap-2 p-5">
               <div className="relative flex justify-between">
                 <h2 className="text-lg font-bold">Edit Schedule</h2>
-                <span
+                {/* <span
                   className="absolute transform -translate-y-1/2 right-0"
                   onClick={() => closedWithoutSaving()}
                 >
@@ -121,7 +121,7 @@ export const EventModal = ({
                   >
                     <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
                   </svg>
-                </span>
+                </span> */}
               </div>
               <div className="flex flex-col 2xl:flex-row text-sm 2xl:text-base justify-between gap-1">
                 <label className="font-semibold">{subject}</label>
@@ -148,12 +148,14 @@ export const EventModal = ({
                 className=" w-fit px-4 py-2 bg-blue-500 rounded-lg text-sm text-white font-semibold"
                 type="submit"
               >
-                Change Schedule
+                {status === "No Information" || modifiedEvents.find((e) => e.id === id)?.status === "No Information"
+                  ? "Close"
+                  : "Change Schedule"}
               </button>
             </div>
           </div>
         </form>
       </div>
     </div>
-  );
+  )
 };

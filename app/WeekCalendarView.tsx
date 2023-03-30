@@ -111,7 +111,6 @@ export const WeekCalendarView = () => {
               const time = `${hour.toString().padStart(2, "0")}:${minute}`
 
               return (
-                <>
                   <tr className="relative select-none h-5 " key={time}>
                     <td className="absolute transform -translate-y-1/2 flex justify-end px-2 items-center text-sm w-16">
                       {time}
@@ -256,7 +255,6 @@ export const WeekCalendarView = () => {
                       )
                     })}
                   </tr>
-                </>
               )
             })}
         </tbody>
