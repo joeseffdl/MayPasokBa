@@ -4,7 +4,7 @@ export default function Home() {
   return (
     <main className={`relative min-h-screen flex flex-col gap-5`}>
       <div className="flex gap-10 p-10">
-        <div className="hidden w-1/5 xl:flex flex-col gap-5">
+        <div className="w-full lg:hidden xl:w-1/5 xl:flex flex-col gap-5">
           <div className="uppercase font-bold text-3xl text-center">
             May F2F Ba?!?
           </div>
@@ -15,10 +15,10 @@ export default function Home() {
             <Event />
           </div>
         </div>
-        <div className=" w-full">
+        <div className="hidden lg:block w-full">
           <WeekCalendarView />
         </div>
       </div>
     </main>
-  );
+  )
 }

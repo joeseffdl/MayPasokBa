@@ -4,9 +4,9 @@ export const Calendar = () => {
   return (
     <div className="flex items-center justify-center">
       <div className="max-w-sm w-full shadow-lg">
-        <div className=" p-5 dark:bg-gray-800 bg-white rounded-t">
+        <div className="p-5 dark:bg-gray-800 bg-white rounded-t">
           <div className="px-4 flex items-center justify-between">
-            <span className="focus:outline-none  text-base font-bold dark:text-gray-100 text-gray-800">
+            <span className="focus:outline-none text-base font-bold dark:text-gray-100 text-gray-800">
               October 2020
             </span>
             <div className="flex items-center">
