@@ -3,7 +3,12 @@
 import { useState, useMemo, useEffect } from "react";
 
 import { scheduleProps } from "@/utils/types";
-import { CompareArraysOfObjects, DAYS_OF_WEEK, TimeDifference, SCHEDULE_DATA_OBJECT } from "@/utils/";
+import {
+  CompareArraysOfObjects,
+  DAYS_OF_WEEK,
+  TimeDifference,
+  SCHEDULE_DATA_OBJECT,
+} from "@/utils/";
 import { EventModal } from "./EventModal";
 import {
   addDoc,
@@ -25,7 +30,7 @@ export const WeekCalendarView = () => {
   const router = useRouter();
   const [user, loading] = useAuthState(auth);
 
-  const [firebaseData, setFirebaseData] = useState<any>([])
+  const [firebaseData, setFirebaseData] = useState<any>([]);
   const [selectedSchedule, setSelectedSchedule] = useState<scheduleProps>({
     id: 0,
     status: "",
@@ -38,13 +43,7 @@ export const WeekCalendarView = () => {
   const [modalState, setModalState] = useState(false);
   const scheduleData = useMemo(() => SCHEDULE_DATA_OBJECT, []);
 
-  function openModalInformation({
-    id,
-    status,
-    subject,
-    startTime,
-    endTime,
-  }: scheduleProps) {
+  function openModalInformation({ id, status, subject, startTime, endTime }: scheduleProps) {
     setSelectedSchedule({
       id,
       status,
@@ -77,25 +76,24 @@ export const WeekCalendarView = () => {
 
   const getScheduleData = async () => {
     try {
-      const docRef = collection(db, "schedules")
-      const q = query(docRef, orderBy("createdOn", "desc"), limit(1))
+      const docRef = collection(db, "schedules");
+      const q = query(docRef, orderBy("createdOn", "desc"), limit(1));
       const unsubscribe = await onSnapshot(q, (querySnapshot) => {
         const data = querySnapshot.docs.map((doc) => {
-          setFirebaseData(doc.data())
-          setModifiedEvents(doc.data().modifiedEvents)
-          setInitialEvents(doc.data().modifiedEvents)
-        })
-      }) 
-      return unsubscribe
+          setFirebaseData(doc.data());
+          setModifiedEvents(doc.data().modifiedEvents);
+          setInitialEvents(doc.data().modifiedEvents);
+        });
+      });
+      return unsubscribe;
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
-  }
+  };
 
   useEffect(() => {
-    getScheduleData()
+    getScheduleData();
   }, []);
-  
 
   return (
     <div className="overflow-hidden rounded-lg shadow-lg">
@@ -114,16 +112,14 @@ export const WeekCalendarView = () => {
                 className={`disabled:cursor-not-allowed disabled:opacity-50 bg-indigo-700 h-10 text-center text-white text-xs rounded-lg font-semibold px-4 py-2`}
                 onClick={clearEvents}
               >
-                {modifiedEvents.length >= 1 && "Clear Events" || "Clear Event"}
+                {(modifiedEvents.length >= 1 && "Clear Events") || "Clear Event"}
               </button>
             </th>
             <th className="p-2">
               <button
                 disabled={
                   modifiedEvents.length == 0 ||
-                  modifiedEvents.every(
-                    (event) => event.status === "No Information"
-                  ) ||
+                  modifiedEvents.every((event) => event.status === "No Information") ||
                   CompareArraysOfObjects(initialEvents, modifiedEvents)
                 }
                 className={`disabled:cursor-not-allowed disabled:opacity-50 bg-indigo-700 h-10 text-center text-white text-xs rounded-lg font-semibold px-4 py-2`}
@@ -149,9 +145,9 @@ export const WeekCalendarView = () => {
           {Array(34)
             .fill(null)
             .map((_, i) => {
-              const hour = Math.floor(i / 2) + 7
-              const minute = i % 2 === 0 ? "00" : "30"
-              const time = `${hour.toString().padStart(2, "0")}:${minute}`
+              const hour = Math.floor(i / 2) + 7;
+              const minute = i % 2 === 0 ? "00" : "30";
+              const time = `${hour.toString().padStart(2, "0")}:${minute}`;
 
               return (
                 <tr className="relative select-none h-5 " key={time}>
@@ -159,49 +155,36 @@ export const WeekCalendarView = () => {
                     {time}
                   </td>
                   {DAYS_OF_WEEK.map((day) => {
-                    const events: scheduleProps[] = scheduleData[day] || []
-                    const event = events.find(
-                      (e: scheduleProps) => e.startTime === time
-                    )
+                    const events: scheduleProps[] = scheduleData[day] || [];
+                    const event = events.find((e: scheduleProps) => e.startTime === time);
                     if (!event) {
                       return (
-                        <td
-                          key={`${day}-${time}`}
-                          className="h-[2.5rem] border border-gray-200"
-                        />
-                      )
+                        <td key={`${day}-${time}`} className="h-[2.5rem] border border-gray-200" />
+                      );
                     }
-                    const { startTime, endTime, subject, status, id } = event
-                    const duration = TimeDifference(startTime, endTime)
+                    const { startTime, endTime, subject, status, id } = event;
+                    const duration = TimeDifference(startTime, endTime);
                     const style: React.CSSProperties = {
                       height: `${(duration as number) * 5}rem`,
-                    }
+                    };
                     return (
                       <td
                         key={`${day}-${time}-${subject}`}
                         className="relative flex justify-center items-start cursor-pointer"
                       >
-                        <div
-                          className="absolute w-full transparent p-1"
-                          style={style}
-                        >
+                        <div className="absolute w-full transparent p-1" style={style}>
                           <div
                             className={`text-xs rounded-lg w-full h-full 
                     ${
-                      modifiedEvents.find((e) => e.id === id)?.status ===
-                      "No Information"
+                      modifiedEvents.find((e) => e.id === id)?.status === "No Information"
                         ? "hover:bg-blue-200 bg-blue-100"
-                        : modifiedEvents.find((e) => e.id === id)?.status ===
-                          "Online"
+                        : modifiedEvents.find((e) => e.id === id)?.status === "Online"
                         ? "hover:bg-green-200 bg-green-100"
-                        : modifiedEvents.find((e) => e.id === id)?.status ===
-                          "Face to Face"
+                        : modifiedEvents.find((e) => e.id === id)?.status === "Face to Face"
                         ? "hover:bg-orange-200 bg-orange-100"
-                        : modifiedEvents.find((e) => e.id === id)?.status ===
-                          "Asynchronous"
+                        : modifiedEvents.find((e) => e.id === id)?.status === "Asynchronous"
                         ? "hover:bg-yellow-200 bg-yellow-100"
-                        : modifiedEvents.find((e) => e.id === id)?.status ===
-                          "No Classes"
+                        : modifiedEvents.find((e) => e.id === id)?.status === "No Classes"
                         ? "hover:bg-red-200 bg-red-100"
                         : "hover:bg-blue-200 bg-blue-100"
                     } 
@@ -223,20 +206,19 @@ export const WeekCalendarView = () => {
                             >
                               <div
                                 className={`${
-                                  modifiedEvents.find((e) => e.id === id)
-                                    ?.status === "No Information"
+                                  modifiedEvents.find((e) => e.id === id)?.status ===
+                                  "No Information"
                                     ? "text-blue-800"
-                                    : modifiedEvents.find((e) => e.id === id)
-                                        ?.status === "Online"
+                                    : modifiedEvents.find((e) => e.id === id)?.status === "Online"
                                     ? "text-green-800"
-                                    : modifiedEvents.find((e) => e.id === id)
-                                        ?.status === "Face to Face"
+                                    : modifiedEvents.find((e) => e.id === id)?.status ===
+                                      "Face to Face"
                                     ? "text-orange-800"
-                                    : modifiedEvents.find((e) => e.id === id)
-                                        ?.status === "Asynchronous"
+                                    : modifiedEvents.find((e) => e.id === id)?.status ===
+                                      "Asynchronous"
                                     ? "text-yellow-800"
-                                    : modifiedEvents.find((e) => e.id === id)
-                                        ?.status === "No Classes"
+                                    : modifiedEvents.find((e) => e.id === id)?.status ===
+                                      "No Classes"
                                     ? "text-red-800"
                                     : "text-blue-800"
                                 } font-bold`}
@@ -245,20 +227,19 @@ export const WeekCalendarView = () => {
                               </div>
                               <div
                                 className={`${
-                                  modifiedEvents.find((e) => e.id === id)
-                                    ?.status === "No Information"
+                                  modifiedEvents.find((e) => e.id === id)?.status ===
+                                  "No Information"
                                     ? "text-blue-400"
-                                    : modifiedEvents.find((e) => e.id === id)
-                                        ?.status === "Online"
+                                    : modifiedEvents.find((e) => e.id === id)?.status === "Online"
                                     ? "text-green-400"
-                                    : modifiedEvents.find((e) => e.id === id)
-                                        ?.status === "Face to Face"
+                                    : modifiedEvents.find((e) => e.id === id)?.status ===
+                                      "Face to Face"
                                     ? "text-orange-400"
-                                    : modifiedEvents.find((e) => e.id === id)
-                                        ?.status === "Asynchronous"
+                                    : modifiedEvents.find((e) => e.id === id)?.status ===
+                                      "Asynchronous"
                                     ? "text-yellow-400"
-                                    : modifiedEvents.find((e) => e.id === id)
-                                        ?.status === "No Classes"
+                                    : modifiedEvents.find((e) => e.id === id)?.status ===
+                                      "No Classes"
                                     ? "text-red-400"
                                     : "text-blue-400"
                                 }`}
@@ -266,25 +247,24 @@ export const WeekCalendarView = () => {
                                 {startTime} - {endTime}
                               </div>
                               <div className="flex items-center font-semibold justify-center h-full uppercase text-slate-700 text-[10px] xl:text-xs">
-                                {modifiedEvents.find((e) => e.id === id)
-                                  ?.status ?? "No Information"}
+                                {modifiedEvents.find((e) => e.id === id)?.status ??
+                                  "No Information"}
                               </div>
                               <div
                                 className={`${
-                                  modifiedEvents.find((e) => e.id === id)
-                                    ?.status === "No Information"
+                                  modifiedEvents.find((e) => e.id === id)?.status ===
+                                  "No Information"
                                     ? "text-blue-600"
-                                    : modifiedEvents.find((e) => e.id === id)
-                                        ?.status === "Online"
+                                    : modifiedEvents.find((e) => e.id === id)?.status === "Online"
                                     ? "text-green-600"
-                                    : modifiedEvents.find((e) => e.id === id)
-                                        ?.status === "Face to Face"
+                                    : modifiedEvents.find((e) => e.id === id)?.status ===
+                                      "Face to Face"
                                     ? "text-orange-600"
-                                    : modifiedEvents.find((e) => e.id === id)
-                                        ?.status === "Asynchronous"
+                                    : modifiedEvents.find((e) => e.id === id)?.status ===
+                                      "Asynchronous"
                                     ? "text-yellow-600"
-                                    : modifiedEvents.find((e) => e.id === id)
-                                        ?.status === "No Classes"
+                                    : modifiedEvents.find((e) => e.id === id)?.status ===
+                                      "No Classes"
                                     ? "text-red-600"
                                     : "text-blue-600"
                                 } flex justify-end`}
@@ -295,16 +275,17 @@ export const WeekCalendarView = () => {
                           </div>
                         </div>
                       </td>
-                    )
+                    );
                   })}
                 </tr>
-              )
+              );
             })}
         </tbody>
       </table>
       {modalState && (
         <EventModal
           {...selectedSchedule}
+          initialEvents={initialEvents}
           modifiedEvents={modifiedEvents}
           setSelectedSchedule={setSelectedSchedule}
           setModalState={setModalState}
@@ -312,5 +293,5 @@ export const WeekCalendarView = () => {
         />
       )}
     </div>
-  )
+  );
 };
