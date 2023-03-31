@@ -98,7 +98,7 @@ export const WeekCalendarView = () => {
   
 
   return (
-    <div className="hidden lg:block overflow-hidden rounded-lg shadow-lg">
+    <div className="overflow-hidden rounded-lg shadow-lg">
       <table className="table-fixed bg-slate-100 p-5 border border-slate-300 shadow-md rounded-lg w-full">
         <thead>
           <tr className="border">
@@ -111,7 +111,7 @@ export const WeekCalendarView = () => {
             <th className="p-2">
               <button
                 disabled={modifiedEvents.length == 0}
-                className={`disabled:cursor-not-allowed disabled:opacity-50 bg-indigo-700 h-10 text-center text-white text-sm rounded-lg font-semibold px-4 py-2`}
+                className={`disabled:cursor-not-allowed disabled:opacity-50 bg-indigo-700 h-10 text-center text-white text-xs rounded-lg font-semibold px-4 py-2`}
                 onClick={clearEvents}
               >
                 {modifiedEvents.length >= 1 && "Clear Events" || "Clear Event"}
@@ -126,7 +126,7 @@ export const WeekCalendarView = () => {
                   ) ||
                   CompareArraysOfObjects(initialEvents, modifiedEvents)
                 }
-                className={`disabled:cursor-not-allowed disabled:opacity-50 bg-indigo-700 h-10 text-center text-white text-sm rounded-lg font-semibold px-4 py-2`}
+                className={`disabled:cursor-not-allowed disabled:opacity-50 bg-indigo-700 h-10 text-center text-white text-xs rounded-lg font-semibold px-4 py-2`}
                 onClick={saveEvents}
               >
                 {modifiedEvents.length > 1 ? "Save Events" : "Save Event"}
