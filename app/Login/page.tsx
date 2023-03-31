@@ -15,7 +15,8 @@ export default function Login() {
 
   // Sign in with Google
   const googleProvider = new GoogleAuthProvider();
-  const GoogleLogin = async () => {
+  const GoogleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     try {
       const result = await signInWithPopup(auth, googleProvider);
       if (user) {
@@ -38,13 +39,13 @@ export default function Login() {
 
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100 p-8 sm:px-16 lg:px-32">
-      <form className="w-full md:w-[512px] md:h-[206px] bg-white shadow-md rounded-xl p-8 flex flex-col justify-around">
+      <form onSubmit={GoogleLogin} className="w-full md:w-[512px] md:h-[206px] bg-white shadow-md rounded-xl p-8 flex flex-col justify-around">
         <h2 className="text-2xl md:text-3xl text-center font-bold mb-4 ">
           Login
         </h2>
         <div className="w-full flex justify-center items-center border-2 border-slate-900 rounded-xl">
           <button
-            onClick={GoogleLogin}
+            type="submit"
             className="w-full flex items-center justify-center font-semibold text-sm md:text-lg p-2 rounded-md bg-white text-gray-900 "
           >
             <FcGoogle className="text-2xl md:text-3xl mr-2" />
