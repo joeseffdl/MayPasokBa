@@ -12,15 +12,17 @@ const statusOptions = [
   { value: "No Classes", label: "No Classes" },
 ];
 
-type SetModifiedEventsProps = React.Dispatch<React.SetStateAction<scheduleProps[]>>;
+type SetModifiedSchedulesProps = React.Dispatch<
+  React.SetStateAction<scheduleProps[]>
+>;
 interface ModalProps extends scheduleProps {
   setSelectedSchedule: {
     (selectedSchedule: scheduleProps): void;
   };
   setModalState: (state: boolean) => void;
-  setModifiedEvents: SetModifiedEventsProps;
-  modifiedEvents: scheduleProps[];
-  initialEvents: scheduleProps[];
+  setModifiedSchedules: SetModifiedSchedulesProps;
+  modifiedSchedules: scheduleProps[];
+  scheduleFromDB: scheduleProps[];
 }
 
 export const EventModal = ({
@@ -31,11 +33,14 @@ export const EventModal = ({
   endTime,
   setSelectedSchedule,
   setModalState,
-  setModifiedEvents,
-  modifiedEvents,
-  initialEvents,
+  setModifiedSchedules,
+  modifiedSchedules,
+  scheduleFromDB,
 }: ModalProps) => {
-  const compareSchedule = CompareArraysOfObjects(initialEvents, modifiedEvents);
+  const compareSchedule = CompareArraysOfObjects(
+    scheduleFromDB,
+    modifiedSchedules
+  );
 
   function handleChange(e: React.ChangeEvent<HTMLSelectElement>) {
     const { value } = e.target;
@@ -47,7 +52,7 @@ export const EventModal = ({
       endTime,
     });
 
-    setModifiedEvents((prev: scheduleProps[]) => {
+    setModifiedSchedules((prev: scheduleProps[]) => {
       const index = prev.findIndex((item) => item.id === id);
       if (index !== -1) {
         const updatedEvent = {
@@ -64,36 +69,31 @@ export const EventModal = ({
     });
   }
 
-  function closedWithoutSaving() {
-    setModifiedEvents((prev: scheduleProps[]) => {
-      const index = prev.findIndex((item) => item.id === id);
-      if (index !== -1) {
-        const updatedEvent = {
-          ...prev[index],
-          status: prev[index].status !== "No Information" ? prev[index].status : "No Information",
-        };
-        const updatedModifiedEvent = [...prev];
-        updatedModifiedEvent[index] = updatedEvent;
-        return updatedModifiedEvent;
-      } else {
-        const newEvent = {
-          id,
-          status: "No Information",
-          subject,
-          startTime,
-          endTime,
-        };
-        return [...prev, newEvent];
-      }
+  function closeModal() {
+    const resetSelectedEvent = scheduleFromDB.find((e) => e.id === id);
+    setModifiedSchedules((prev: scheduleProps[]) => {
+      const updatedEvents = prev.map((event) => {
+        if (event.id === resetSelectedEvent?.id) {
+          // if the event id matches with the resetSelectedEvent id,
+          // update the event and return the updated event
+          return resetSelectedEvent;
+        } else {
+          // if the event id doesn't match, return the original event
+          return event;
+        }
+      });
+      return updatedEvents;
     });
     setModalState(false);
   }
 
-  async function saveSchedule(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+  async function applyChanges(
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) {
     e.preventDefault();
     if (
-      modifiedEvents.find((e) => e.id === id)?.status !==
-      initialEvents.find((e) => e.id === id)?.status
+      modifiedSchedules.find((e) => e.id === id)?.status !==
+      scheduleFromDB.find((e) => e.id === id)?.status
     ) {
       toast.success("Schedule updated 📆");
     }
@@ -114,7 +114,7 @@ export const EventModal = ({
                 {!compareSchedule && (
                   <span
                     className="absolute transform -translate-y-1/2 right-0"
-                    onClick={() => closedWithoutSaving()}
+                    onClick={() => closeModal()}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -137,7 +137,7 @@ export const EventModal = ({
               <div className=" flex justify-between text-sm 2xl:text-base">
                 <label>Status</label>
                 <select
-                  value={modifiedEvents.find((e) => e.id === id)?.status}
+                  value={modifiedSchedules.find((e) => e.id === id)?.status}
                   onChange={handleChange}
                 >
                   {statusOptions.map((optStat) => (
@@ -152,10 +152,12 @@ export const EventModal = ({
               <button
                 className=" w-fit px-4 py-2 bg-blue-500 rounded-lg text-sm text-white font-semibold"
                 type="submit"
-                onClick={compareSchedule ? (e) => closedWithoutSaving() : (e) => saveSchedule(e)}
+                onClick={
+                  compareSchedule ? (e) => closeModal() : (e) => applyChanges(e)
+                }
               >
-                {modifiedEvents.find((e) => e.id === id)?.status ===
-                initialEvents.find((e) => e.id === id)?.status
+                {modifiedSchedules.find((e) => e.id === id)?.status ===
+                scheduleFromDB.find((e) => e.id === id)?.status
                   ? "Close"
                   : "Apply"}
               </button>
