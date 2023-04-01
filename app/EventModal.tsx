@@ -1,6 +1,7 @@
 "use client";
 
 import { scheduleProps } from "@/utils/types";
+import { CompareArraysOfObjects } from "@/utils";
 import { toast } from "react-hot-toast";
 
 const statusOptions = [
@@ -11,7 +12,7 @@ const statusOptions = [
   { value: "No Classes", label: "No Classes" },
 ];
 
-type SetModifiedEventsProps = React.Dispatch<
+type SetModifiedSchedulesProps = React.Dispatch<
   React.SetStateAction<scheduleProps[]>
 >;
 interface ModalProps extends scheduleProps {
@@ -19,8 +20,9 @@ interface ModalProps extends scheduleProps {
     (selectedSchedule: scheduleProps): void;
   };
   setModalState: (state: boolean) => void;
-  setModifiedEvents: SetModifiedEventsProps;
-  modifiedEvents: scheduleProps[];
+  setModifiedSchedules: SetModifiedSchedulesProps;
+  modifiedSchedules: scheduleProps[];
+  scheduleFromDB: scheduleProps[];
 }
 
 export const EventModal = ({
@@ -31,9 +33,15 @@ export const EventModal = ({
   endTime,
   setSelectedSchedule,
   setModalState,
-  setModifiedEvents,
-  modifiedEvents,
+  setModifiedSchedules,
+  modifiedSchedules,
+  scheduleFromDB,
 }: ModalProps) => {
+  const compareSchedule = CompareArraysOfObjects(
+    scheduleFromDB,
+    modifiedSchedules
+  );
+
   function handleChange(e: React.ChangeEvent<HTMLSelectElement>) {
     const { value } = e.target;
     setSelectedSchedule({
@@ -43,7 +51,8 @@ export const EventModal = ({
       startTime,
       endTime,
     });
-    setModifiedEvents((prev: scheduleProps[]) => {
+
+    setModifiedSchedules((prev: scheduleProps[]) => {
       const index = prev.findIndex((item) => item.id === id);
       if (index !== -1) {
         const updatedEvent = {
@@ -60,47 +69,41 @@ export const EventModal = ({
     });
   }
 
-  function closedWithoutSaving() {
-    setModifiedEvents((prev: scheduleProps[]) => {
-      const index = prev.findIndex((item) => item.id === id)
-      if (index !== -1) {
-        const updatedEvent = {
-          ...prev[index],
-          status:
-            prev[index].status !== "No Information"
-              ? prev[index].status
-              : "No Information",
+  function closeModal() {
+    const resetSelectedEvent = scheduleFromDB.find((e) => e.id === id);
+    setModifiedSchedules((prev: scheduleProps[]) => {
+      const updatedEvents = prev.map((event) => {
+        if (event.id === resetSelectedEvent?.id) {
+          // if the event id matches with the resetSelectedEvent id,
+          // update the event and return the updated event
+          return resetSelectedEvent;
+        } else {
+          // if the event id doesn't match, return the original event
+          return event;
         }
-        const updatedModifiedEvent = [...prev]
-        updatedModifiedEvent[index] = updatedEvent
-        return updatedModifiedEvent
-      } else {
-        const newEvent = {
-          id,
-          status: "No Information",
-          subject,
-          startTime,
-          endTime,
-        }
-        return [...prev, newEvent]
-      }                                                        
-    })
-    setModalState(false)
+      });
+      return updatedEvents;
+    });
+    setModalState(false);
   }
 
-  async function saveSchedule(e: React.FormEvent<HTMLFormElement>) {
-      e.preventDefault();
-      if (modifiedEvents.find((e) => e.id === id)?.status !== "No Information" && status !== "No Information") { 
-          toast.success("Schedule updated 📆");
-      }
-      setModalState(false);
+  async function applyChanges(
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) {
+    e.preventDefault();
+    if (
+      modifiedSchedules.find((e) => e.id === id)?.status !==
+      scheduleFromDB.find((e) => e.id === id)?.status
+    ) {
+      toast.success("Schedule updated 📆");
+    }
+    setModalState(false);
   }
 
   return (
     <div className="absolute top-0 left-0 w-full bg-gray-500/50 h-full ">
       <div className="h-screen flex justify-center items-center">
         <form
-          onSubmit={saveSchedule}
           className="bg-white w-1/4 h-1/4 rounded-2xl"
           onClick={(event) => event.stopPropagation()}
         >
@@ -108,20 +111,22 @@ export const EventModal = ({
             <div className="flex flex-col gap-2 p-5">
               <div className="relative flex justify-between">
                 <h2 className="text-lg font-bold">Edit Schedule</h2>
-                {/* <span
-                  className="absolute transform -translate-y-1/2 right-0"
-                  onClick={() => closedWithoutSaving()}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    fill="currentColor"
-                    viewBox="0 0 16 16"
+                {!compareSchedule && (
+                  <span
+                    className="absolute transform -translate-y-1/2 right-0"
+                    onClick={() => closeModal()}
                   >
-                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
-                  </svg>
-                </span> */}
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      fill="currentColor"
+                      viewBox="0 0 16 16"
+                    >
+                      <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+                    </svg>
+                  </span>
+                )}
               </div>
               <div className="flex flex-col 2xl:flex-row text-sm 2xl:text-base justify-between gap-1">
                 <label className="font-semibold">{subject}</label>
@@ -132,7 +137,7 @@ export const EventModal = ({
               <div className=" flex justify-between text-sm 2xl:text-base">
                 <label>Status</label>
                 <select
-                  value={modifiedEvents.find((e) => e.id === id)?.status}
+                  value={modifiedSchedules.find((e) => e.id === id)?.status}
                   onChange={handleChange}
                 >
                   {statusOptions.map((optStat) => (
@@ -147,15 +152,19 @@ export const EventModal = ({
               <button
                 className=" w-fit px-4 py-2 bg-blue-500 rounded-lg text-sm text-white font-semibold"
                 type="submit"
+                onClick={
+                  compareSchedule ? (e) => closeModal() : (e) => applyChanges(e)
+                }
               >
-                {status === "No Information" || modifiedEvents.find((e) => e.id === id)?.status === "No Information"
+                {modifiedSchedules.find((e) => e.id === id)?.status ===
+                scheduleFromDB.find((e) => e.id === id)?.status
                   ? "Close"
-                  : "Change Schedule"}
+                  : "Apply"}
               </button>
             </div>
           </div>
         </form>
       </div>
     </div>
-  )
+  );
 };

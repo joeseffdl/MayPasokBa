@@ -1,6 +1,10 @@
 "use client";
 
-import { GoogleAuthProvider, signInWithPopup, signInWithRedirect } from "firebase/auth";
+import {
+  GoogleAuthProvider,
+  signInWithPopup,
+  signInWithRedirect,
+} from "firebase/auth";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
@@ -39,7 +43,10 @@ export default function Login() {
 
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100 p-8 sm:px-16 lg:px-32">
-      <form onSubmit={GoogleLogin} className="w-full md:w-[512px] md:h-[206px] bg-white shadow-md rounded-xl p-8 flex flex-col justify-around">
+      <form
+        onSubmit={GoogleLogin}
+        className="w-full md:w-[512px] md:h-[206px] bg-white shadow-md rounded-xl p-8 flex flex-col justify-around"
+      >
         <h2 className="text-2xl md:text-3xl text-center font-bold mb-4 ">
           Login
         </h2>

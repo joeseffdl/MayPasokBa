@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 export const Event = () => {
   return (
@@ -40,5 +40,5 @@ export const Event = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
