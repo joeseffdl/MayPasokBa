@@ -16,20 +16,20 @@ import {
   onSnapshot,
   orderBy,
   query,
-  serverTimestamp
+  serverTimestamp,
 } from "firebase/firestore";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState, useContext } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { toast } from "react-hot-toast";
 import { EventModal } from "./EventModal";
 import { WeekCalendarSkeleton } from "./WeekCalendarSkeleton";
+import { DataContext } from "@/utils/context";
 
-export const WeekCalendarView = () => {
+export const WeekCalendarView = ({}) => {
   const router = useRouter();
   const [user, loading] = useAuthState(auth);
-
-  const [firebaseData, setFirebaseData] = useState<any>([]);
+  const { firebaseData, setFirebaseData } = useContext<any>(DataContext);
   const [selectedSchedule, setSelectedSchedule] = useState<scheduleProps>({
     id: 0,
     status: "",
@@ -119,8 +119,18 @@ export const WeekCalendarView = () => {
             <thead>
               <tr className="border">
                 <th className="w-16 h-10 p-2 border" />
-                <th />
-                <th />
+                <th className="text-xs text-gray-900" colSpan={2}>
+                  Scheduled by {""}
+                  <span className="uppercase">{firebaseData?.username}</span>
+                  <br />
+                  <span className="text-[10px]">
+                    {new Date(firebaseData?.createdOn?.toMillis())
+                      .toDateString()
+                      .split(" ")
+                      .slice(1)
+                      .join(" ")}
+                  </span>
+                </th>
                 <th />
                 <th />
                 <th />
@@ -263,16 +273,16 @@ export const WeekCalendarView = () => {
                                   <div
                                     className={`${
                                       checkStatus === "No Information"
-                                        ? "text-blue-400"
+                                        ? "text-blue-500"
                                         : checkStatus === "Online"
-                                        ? "text-green-400"
+                                        ? "text-green-500"
                                         : checkStatus === "Face to Face"
-                                        ? "text-orange-400"
+                                        ? "text-orange-500"
                                         : checkStatus === "Asynchronous"
-                                        ? "text-yellow-400"
+                                        ? "text-yellow-500"
                                         : checkStatus === "No Classes"
-                                        ? "text-red-400"
-                                        : "text-blue-400"
+                                        ? "text-red-500"
+                                        : "text-blue-500"
                                     }`}
                                   >
                                     {startTime} - {endTime}
@@ -319,7 +329,9 @@ export const WeekCalendarView = () => {
             />
           )}
         </div>
-      ) : <WeekCalendarSkeleton />}
+      ) : (
+        <WeekCalendarSkeleton />
+      )}
     </>
   );
 };

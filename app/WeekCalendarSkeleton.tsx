@@ -1,4 +1,4 @@
-import { DAYS_OF_WEEK } from "@/utils"
+import { DAYS_OF_WEEK } from "@/utils";
 
 export const WeekCalendarSkeleton = () => (
   <div className="overflow-hidden rounded-lg shadow-lg">
@@ -46,9 +46,9 @@ export const WeekCalendarSkeleton = () => (
         {Array(34)
           .fill(null)
           .map((_, i) => {
-            const hour = Math.floor(i / 2) + 7
-            const minute = i % 2 === 0 ? "00" : "30"
-            const time = `${hour.toString().padStart(2, "0")}:${minute}`
+            const hour = Math.floor(i / 2) + 7;
+            const minute = i % 2 === 0 ? "00" : "30";
+            const time = `${hour.toString().padStart(2, "0")}:${minute}`;
 
             return (
               <tr className="relative select-none h-5 " key={time}>
@@ -62,9 +62,9 @@ export const WeekCalendarSkeleton = () => (
                   />
                 ))}
               </tr>
-            )
+            );
           })}
       </tbody>
     </table>
   </div>
-)
+);

@@ -2,15 +2,15 @@ import { Calendar, Event, WeekCalendarView } from "./";
 
 export default function Home() {
   return (
-    <main className={`relative min-h-screen flex flex-col gap-5`}>
+    <main className={`bg-rose-50 relative min-h-screen flex flex-col gap-5`}>
       <div className="flex gap-10 p-10">
-        <div className="w-full lg:hidden xl:w-1/5 xl:flex flex-col gap-5">
+        <div className="w-full lg:hidden xl:w-1/5 flex flex-col gap-5">
           <div className="uppercase font-bold text-3xl text-center">
             May F2F Ba?!?
           </div>
-          <div>
+          {/* <div>
             <Calendar />
-          </div>
+          </div> */}
           <div>
             <Event />
           </div>
