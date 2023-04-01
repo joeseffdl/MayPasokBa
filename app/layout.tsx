@@ -1,3 +1,4 @@
+import { DataContextProvider } from "@/utils/context";
 import { ToasterComponent } from "./ToasterComponent";
 import "./globals.css";
 import { Rubik } from "next/font/google";
@@ -21,7 +22,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${rubik.variable}`}>
-        <ToasterComponent>{children}</ToasterComponent>
+        <DataContextProvider>
+          <ToasterComponent>{children}</ToasterComponent>
+        </DataContextProvider>
       </body>
     </html>
   );
