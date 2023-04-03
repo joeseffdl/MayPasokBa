@@ -3,31 +3,29 @@
 import { DataContext } from "@/utils/context";
 import { scheduleProps } from "@/utils/types";
 import Image from "next/image";
-import { useContext } from "react";
+import { useContext, useMemo } from "react";
 
 export const Event = () => {
   const { firebaseData, setFirebaseData } = useContext<any>(DataContext);
 
-  function countStatusTypes(
-    modifiedSchedules: scheduleProps[]
-  ): Record<string, number> {
+  const countStatusTypes = useMemo(() => {
     const counts: Record<string, number> = {
       "No Information": 0,
-      Online: 0,
+      "Online": 0,
       "Face to Face": 0,
-      Asynchronous: 0,
+      "Asynchronous": 0,
       "No Classes": 0,
-    };
+    }
 
-    modifiedSchedules?.forEach((obj) => {
-      const status: string | undefined = obj.status;
+    firebaseData?.modifiedSchedules.forEach((obj:scheduleProps) => {
+      const status: string | undefined = obj.status
       if (status && status in counts) {
-        counts[status]++;
+        counts[status]++
       }
-    });
+    })
 
-    return counts;
-  }
+    return counts
+  }, [firebaseData?.modifiedSchedules])
 
   return (
     <div className="flex items-center justify-center ">
@@ -70,32 +68,32 @@ export const Event = () => {
                     <div
                       className={`${
                         data.status === "No Information"
-                          ? "hover:bg-blue-200 bg-blue-100"
+                          ? "hover:bg-sky-200 bg-sky-100"
                           : data.status === "Online"
-                          ? "hover:bg-green-200 bg-green-100"
+                          ? "hover:bg-emerald-200 bg-emerald-100"
                           : data.status === "Face to Face"
-                          ? "hover:bg-orange-200 bg-orange-100"
+                          ? "hover:bg-fuchsia-200 bg-fuchsia-100"
                           : data.status === "Asynchronous"
-                          ? "hover:bg-yellow-200 bg-yellow-100"
+                          ? "hover:bg-amber-200 bg-amber-100"
                           : data.status === "No Classes"
-                          ? "hover:bg-red-200 bg-red-100"
-                          : "hover:bg-blue-200 bg-blue-100"
+                          ? "hover:bg-rose-200 bg-rose-100"
+                          : "hover:bg-sky-200 bg-sky-100"
                       } w-full rounded-lg shadow-md px-4 py-2`}
                     >
                       <div className="flex flex-col w-full ">
                         <span
                           className={`${
                             data.status === "No Information"
-                              ? "text-blue-800"
+                              ? "text-sky-800"
                               : data.status === "Online"
-                              ? "text-green-800"
+                              ? "text-emerald-800"
                               : data.status === "Face to Face"
-                              ? "text-orange-800"
+                              ? "text-fuchsia-800"
                               : data.status === "Asynchronous"
-                              ? "text-yellow-800"
+                              ? "text-amber-800"
                               : data.status === "No Classes"
-                              ? "text-red-800"
-                              : "text-blue-800"
+                              ? "text-rose-800"
+                              : "text-sky-800"
                           } font-semibold w-1/2`}
                         >
                           {data.subject}
@@ -103,16 +101,16 @@ export const Event = () => {
                         <div
                           className={`${
                             data.status === "No Information"
-                              ? "text-blue-500"
+                              ? "text-sky-500"
                               : data.status === "Online"
-                              ? "text-green-500"
+                              ? "text-emerald-500"
                               : data.status === "Face to Face"
-                              ? "text-orange-500"
+                              ? "text-fuchsia-500"
                               : data.status === "Asynchronous"
-                              ? "text-yellow-500"
+                              ? "text-amber-500"
                               : data.status === "No Classes"
-                              ? "text-red-500"
-                              : "text-blue-500"
+                              ? "text-rose-500"
+                              : "text-sky-500"
                           }`}
                         >
                           {data.startTime} - {data.endTime}
@@ -144,32 +142,32 @@ export const Event = () => {
                     <div
                       className={`${
                         data.status === "No Information"
-                          ? "hover:bg-blue-200 bg-blue-100"
+                          ? "hover:bg-sky-200 bg-sky-100"
                           : data.status === "Online"
-                          ? "hover:bg-green-200 bg-green-100"
+                          ? "hover:bg-emerald-200 bg-emerald-100"
                           : data.status === "Face to Face"
-                          ? "hover:bg-orange-200 bg-orange-100"
+                          ? "hover:bg-fuchsia-200 bg-fuchsia-100"
                           : data.status === "Asynchronous"
-                          ? "hover:bg-yellow-200 bg-yellow-100"
+                          ? "hover:bg-amber-200 bg-amber-100"
                           : data.status === "No Classes"
-                          ? "hover:bg-red-200 bg-red-100"
-                          : "hover:bg-blue-200 bg-blue-100"
+                          ? "hover:bg-rose-200 bg-rose-100"
+                          : "hover:bg-sky-200 bg-sky-100"
                       } w-full rounded-lg shadow-md px-4 py-2`}
                     >
                       <div className="flex flex-col w-full ">
                         <span
                           className={`${
                             data.status === "No Information"
-                              ? "text-blue-800"
+                              ? "text-sky-800"
                               : data.status === "Online"
-                              ? "text-green-800"
+                              ? "text-emerald-800"
                               : data.status === "Face to Face"
-                              ? "text-orange-800"
+                              ? "text-fuchsia-800"
                               : data.status === "Asynchronous"
-                              ? "text-yellow-800"
+                              ? "text-amber-800"
                               : data.status === "No Classes"
-                              ? "text-red-800"
-                              : "text-blue-800"
+                              ? "text-rose-800"
+                              : "text-sky-800"
                           } font-semibold w-1/2`}
                         >
                           {data.subject}
@@ -177,16 +175,16 @@ export const Event = () => {
                         <div
                           className={`${
                             data.status === "No Information"
-                              ? "text-blue-500"
+                              ? "text-sky-500"
                               : data.status === "Online"
-                              ? "text-green-500"
+                              ? "text-emerald-500"
                               : data.status === "Face to Face"
-                              ? "text-orange-500"
+                              ? "text-fuchsia-500"
                               : data.status === "Asynchronous"
-                              ? "text-yellow-500"
+                              ? "text-amber-500"
                               : data.status === "No Classes"
-                              ? "text-red-500"
-                              : "text-blue-500"
+                              ? "text-rose-500"
+                              : "text-sky-500"
                           }`}
                         >
                           {data.startTime} - {data.endTime}
@@ -209,32 +207,32 @@ export const Event = () => {
                     <div
                       className={`${
                         data.status === "No Information"
-                          ? "hover:bg-blue-200 bg-blue-100"
+                          ? "hover:bg-sky-200 bg-sky-100"
                           : data.status === "Online"
-                          ? "hover:bg-green-200 bg-green-100"
+                          ? "hover:bg-emerald-200 bg-emerald-100"
                           : data.status === "Face to Face"
-                          ? "hover:bg-orange-200 bg-orange-100"
+                          ? "hover:bg-fuchsia-200 bg-fuchsia-100"
                           : data.status === "Asynchronous"
-                          ? "hover:bg-yellow-200 bg-yellow-100"
+                          ? "hover:bg-amber-200 bg-amber-100"
                           : data.status === "No Classes"
-                          ? "hover:bg-red-200 bg-red-100"
-                          : "hover:bg-blue-200 bg-blue-100"
+                          ? "hover:bg-rose-200 bg-rose-100"
+                          : "hover:bg-sky-200 bg-sky-100"
                       } w-full rounded-lg shadow-md px-4 py-2`}
                     >
                       <div className="flex flex-col w-full ">
                         <span
                           className={`${
                             data.status === "No Information"
-                              ? "text-blue-800"
+                              ? "text-sky-800"
                               : data.status === "Online"
-                              ? "text-green-800"
+                              ? "text-emerald-800"
                               : data.status === "Face to Face"
-                              ? "text-orange-800"
+                              ? "text-fuchsia-800"
                               : data.status === "Asynchronous"
-                              ? "text-yellow-800"
+                              ? "text-amber-800"
                               : data.status === "No Classes"
-                              ? "text-red-800"
-                              : "text-blue-800"
+                              ? "text-rose-800"
+                              : "text-sky-800"
                           } font-semibold w-1/2`}
                         >
                           {data.subject}
@@ -242,16 +240,16 @@ export const Event = () => {
                         <div
                           className={`${
                             data.status === "No Information"
-                              ? "text-blue-500"
+                              ? "text-sky-500"
                               : data.status === "Online"
-                              ? "text-green-500"
+                              ? "text-emerald-500"
                               : data.status === "Face to Face"
-                              ? "text-orange-500"
+                              ? "text-fuchsia-500"
                               : data.status === "Asynchronous"
-                              ? "text-yellow-500"
+                              ? "text-amber-500"
                               : data.status === "No Classes"
-                              ? "text-red-500"
-                              : "text-blue-500"
+                              ? "text-rose-500"
+                              : "text-sky-500"
                           }`}
                         >
                           {data.startTime} - {data.endTime}
@@ -274,32 +272,32 @@ export const Event = () => {
                     <div
                       className={`${
                         data.status === "No Information"
-                          ? "hover:bg-blue-200 bg-blue-100"
+                          ? "hover:bg-sky-200 bg-sky-100"
                           : data.status === "Online"
-                          ? "hover:bg-green-200 bg-green-100"
+                          ? "hover:bg-emerald-200 bg-emerald-100"
                           : data.status === "Face to Face"
-                          ? "hover:bg-orange-200 bg-orange-100"
+                          ? "hover:bg-fuchsia-200 bg-fuchsia-100"
                           : data.status === "Asynchronous"
-                          ? "hover:bg-yellow-200 bg-yellow-100"
+                          ? "hover:bg-amber-200 bg-amber-100"
                           : data.status === "No Classes"
-                          ? "hover:bg-red-200 bg-red-100"
-                          : "hover:bg-blue-200 bg-blue-100"
+                          ? "hover:bg-rose-200 bg-rose-100"
+                          : "hover:bg-sky-200 bg-sky-100"
                       } w-full rounded-lg shadow-md px-4 py-2`}
                     >
                       <div className="flex flex-col w-full ">
                         <span
                           className={`${
                             data.status === "No Information"
-                              ? "text-blue-800"
+                              ? "text-sky-800"
                               : data.status === "Online"
-                              ? "text-green-800"
+                              ? "text-emerald-800"
                               : data.status === "Face to Face"
-                              ? "text-orange-800"
+                              ? "text-fuchsia-800"
                               : data.status === "Asynchronous"
-                              ? "text-yellow-800"
+                              ? "text-amber-800"
                               : data.status === "No Classes"
-                              ? "text-red-800"
-                              : "text-blue-800"
+                              ? "text-rose-800"
+                              : "text-sky-800"
                           } font-semibold w-1/2`}
                         >
                           {data.subject}
@@ -307,16 +305,16 @@ export const Event = () => {
                         <div
                           className={`${
                             data.status === "No Information"
-                              ? "text-blue-500"
+                              ? "text-sky-500"
                               : data.status === "Online"
-                              ? "text-green-500"
+                              ? "text-emerald-500"
                               : data.status === "Face to Face"
-                              ? "text-orange-500"
+                              ? "text-fuchsia-500"
                               : data.status === "Asynchronous"
-                              ? "text-yellow-500"
+                              ? "text-amber-500"
                               : data.status === "No Classes"
-                              ? "text-red-500"
-                              : "text-blue-500"
+                              ? "text-rose-500"
+                              : "text-sky-500"
                           }`}
                         >
                           {data.startTime} - {data.endTime}

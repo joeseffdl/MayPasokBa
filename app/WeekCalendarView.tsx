@@ -81,13 +81,10 @@ export const WeekCalendarView = ({}) => {
   function countNoInformation(): number {
     return modifiedSchedules
       .map((obj) => obj.status)
-      .reduce((acc, curr) => {
-        if (curr === "No Information") {
-          return acc + 1;
-        } else {
-          return acc;
-        }
-      }, 0);
+      .reduce(
+        (acc, curr) => (curr === "No Information" ? acc + 1 : acc),
+        0
+      )
   }
 
   const getScheduleData = async () => {
@@ -226,16 +223,16 @@ export const WeekCalendarView = ({}) => {
                                 className={`text-xs rounded-lg w-full h-full 
                         ${
                           checkStatus === "No Information"
-                            ? "hover:bg-blue-200 bg-blue-100"
+                            ? "hover:bg-sky-200 bg-sky-100"
                             : checkStatus === "Online"
-                            ? "hover:bg-green-200 bg-green-100"
+                            ? "hover:bg-emerald-200 bg-emerald-100"
                             : checkStatus === "Face to Face"
-                            ? "hover:bg-orange-200 bg-orange-100"
+                            ? "hover:bg-fuchsia-200 bg-fuchsia-100"
                             : checkStatus === "Asynchronous"
-                            ? "hover:bg-yellow-200 bg-yellow-100"
+                            ? "hover:bg-amber-200 bg-amber-100"
                             : checkStatus === "No Classes"
-                            ? "hover:bg-red-200 bg-red-100"
-                            : "hover:bg-blue-200 bg-blue-100"
+                            ? "hover:bg-rose-200 bg-rose-100"
+                            : "hover:bg-sky-200 bg-sky-100"
                         } 
                         p-2 flex items-center justify-center`}
                               >
@@ -256,16 +253,16 @@ export const WeekCalendarView = ({}) => {
                                   <div
                                     className={`${
                                       checkStatus === "No Information"
-                                        ? "text-blue-800"
+                                        ? "text-sky-800"
                                         : checkStatus === "Online"
-                                        ? "text-green-800"
+                                        ? "text-emerald-800"
                                         : checkStatus === "Face to Face"
-                                        ? "text-orange-800"
+                                        ? "text-fuchsia-800"
                                         : checkStatus === "Asynchronous"
-                                        ? "text-yellow-800"
+                                        ? "text-amber-800"
                                         : checkStatus === "No Classes"
-                                        ? "text-red-800"
-                                        : "text-blue-800"
+                                        ? "text-rose-800"
+                                        : "text-sky-800"
                                     } font-bold`}
                                   >
                                     {subject}
@@ -273,16 +270,16 @@ export const WeekCalendarView = ({}) => {
                                   <div
                                     className={`${
                                       checkStatus === "No Information"
-                                        ? "text-blue-500"
+                                        ? "text-sky-500"
                                         : checkStatus === "Online"
-                                        ? "text-green-500"
+                                        ? "text-emerald-500"
                                         : checkStatus === "Face to Face"
-                                        ? "text-orange-500"
+                                        ? "text-fuchsia-500"
                                         : checkStatus === "Asynchronous"
-                                        ? "text-yellow-500"
+                                        ? "text-amber-500"
                                         : checkStatus === "No Classes"
-                                        ? "text-red-500"
-                                        : "text-blue-500"
+                                        ? "text-rose-500"
+                                        : "text-sky-500"
                                     }`}
                                   >
                                     {startTime} - {endTime}
@@ -293,16 +290,16 @@ export const WeekCalendarView = ({}) => {
                                   <div
                                     className={`${
                                       checkStatus === "No Information"
-                                        ? "text-blue-600"
+                                        ? "text-sky-600"
                                         : checkStatus === "Online"
-                                        ? "text-green-600"
+                                        ? "text-emerald-600"
                                         : checkStatus === "Face to Face"
-                                        ? "text-orange-600"
+                                        ? "text-fuchsia-600"
                                         : checkStatus === "Asynchronous"
-                                        ? "text-yellow-600"
+                                        ? "text-amber-600"
                                         : checkStatus === "No Classes"
-                                        ? "text-red-600"
-                                        : "text-blue-600"
+                                        ? "text-rose-600"
+                                        : "text-sky-600"
                                     } flex justify-end`}
                                   >
                                     {duration} hours
