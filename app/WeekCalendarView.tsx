@@ -81,13 +81,10 @@ export const WeekCalendarView = ({}) => {
   function countNoInformation(): number {
     return modifiedSchedules
       .map((obj) => obj.status)
-      .reduce((acc, curr) => {
-        if (curr === "No Information") {
-          return acc + 1;
-        } else {
-          return acc;
-        }
-      }, 0);
+      .reduce(
+        (acc, curr) => (curr === "No Information" ? acc + 1 : acc),
+        0
+      )
   }
 
   const getScheduleData = async () => {

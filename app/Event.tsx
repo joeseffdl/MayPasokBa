@@ -3,31 +3,29 @@
 import { DataContext } from "@/utils/context";
 import { scheduleProps } from "@/utils/types";
 import Image from "next/image";
-import { useContext } from "react";
+import { useContext, useMemo } from "react";
 
 export const Event = () => {
   const { firebaseData, setFirebaseData } = useContext<any>(DataContext);
 
-  function countStatusTypes(
-    modifiedSchedules: scheduleProps[]
-  ): Record<string, number> {
+  const countStatusTypes = useMemo(() => {
     const counts: Record<string, number> = {
       "No Information": 0,
-      Online: 0,
+      "Online": 0,
       "Face to Face": 0,
-      Asynchronous: 0,
+      "Asynchronous": 0,
       "No Classes": 0,
-    };
+    }
 
-    modifiedSchedules?.forEach((obj) => {
-      const status: string | undefined = obj.status;
+    firebaseData?.modifiedSchedules.forEach((obj:scheduleProps) => {
+      const status: string | undefined = obj.status
       if (status && status in counts) {
-        counts[status]++;
+        counts[status]++
       }
-    });
+    })
 
-    return counts;
-  }
+    return counts
+  }, [firebaseData?.modifiedSchedules])
 
   return (
     <div className="flex items-center justify-center ">
