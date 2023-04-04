@@ -22,7 +22,7 @@ export default function Login() {
   const GoogleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const result = await signInWithPopup(auth, googleProvider);
+      const result = await signInWithRedirect(auth, googleProvider);
       if (user) {
         toast.success("Successfully signed in with your Google account! 🎉");
         router.push("/");

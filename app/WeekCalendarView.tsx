@@ -81,10 +81,7 @@ export const WeekCalendarView = ({}) => {
   function countNoInformation(): number {
     return modifiedSchedules
       .map((obj) => obj.status)
-      .reduce(
-        (acc, curr) => (curr === "No Information" ? acc + 1 : acc),
-        0
-      )
+      .reduce((acc, curr) => (curr === "No Information" ? acc + 1 : acc), 0);
   }
 
   const getScheduleData = async () => {
@@ -139,8 +136,13 @@ export const WeekCalendarView = ({}) => {
                     className={`disabled:cursor-not-allowed disabled:opacity-50 bg-indigo-700 h-10 text-center text-white text-xs rounded-lg font-semibold px-4 py-2`}
                     onClick={clearEvents}
                   >
-                    {(modifiedSchedules?.length >= 1 && "Clear Events") ||
-                      "Clear Event"}
+                    {(
+                      countNoInformation() == 10
+                      ? "Clear"
+                      : countNoInformation() == 9
+                      ? "Clear Event"
+                      : "Clear Events"
+                    )}
                   </button>
                 </th>
                 <th className="p-2">
@@ -178,9 +180,9 @@ export const WeekCalendarView = ({}) => {
               {Array(34)
                 .fill(null)
                 .map((_, i) => {
-                  const hour = Math.floor(i / 2) + 7;
-                  const minute = i % 2 === 0 ? "00" : "30";
-                  const time = `${hour.toString().padStart(2, "0")}:${minute}`;
+                  const hour = Math.floor(i / 2) + 7
+                  const minute = i % 2 === 0 ? "00" : "30"
+                  const time = `${hour.toString().padStart(2, "0")}:${minute}`
 
                   return (
                     <tr className="relative select-none h-5 " key={time}>
@@ -188,27 +190,27 @@ export const WeekCalendarView = ({}) => {
                         {time}
                       </td>
                       {DAYS_OF_WEEK.map((day) => {
-                        const events: scheduleProps[] = scheduleData[day] || [];
+                        const events: scheduleProps[] = scheduleData[day] || []
                         const event = events.find(
                           (e: scheduleProps) => e.startTime === time
-                        );
+                        )
                         if (!event) {
                           return (
                             <td
                               key={`${day}-${time}`}
                               className="h-[2.5rem] border border-gray-200"
                             />
-                          );
+                          )
                         }
                         const { startTime, endTime, subject, status, id } =
-                          event;
-                        const duration = TimeDifference(startTime, endTime);
+                          event
+                        const duration = TimeDifference(startTime, endTime)
                         const style: React.CSSProperties = {
                           height: `${(duration as number) * 5}rem`,
-                        };
+                        }
                         const checkStatus = modifiedSchedules?.find(
                           (e) => e.id === id
-                        )?.status;
+                        )?.status
 
                         return (
                           <td
@@ -308,10 +310,10 @@ export const WeekCalendarView = ({}) => {
                               </div>
                             </div>
                           </td>
-                        );
+                        )
                       })}
                     </tr>
-                  );
+                  )
                 })}
             </tbody>
           </table>
@@ -330,5 +332,5 @@ export const WeekCalendarView = ({}) => {
         <WeekCalendarSkeleton />
       )}
     </>
-  );
+  )
 };
