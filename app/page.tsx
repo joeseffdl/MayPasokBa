@@ -1,4 +1,4 @@
-import { Calendar, Event, WeekCalendarView } from "./";
+import { Event, WeekCalendarView } from "./";
 
 export default function Home() {
   return (
