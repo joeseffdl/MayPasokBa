@@ -1,5 +1,3 @@
-"use client";
-
 import { scheduleProps } from "@/utils/types";
 import { CompareArraysOfObjects } from "@/utils";
 import { toast } from "react-hot-toast";
