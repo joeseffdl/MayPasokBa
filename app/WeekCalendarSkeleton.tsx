@@ -1,7 +1,7 @@
-import { DAYS_OF_WEEK } from "@/utils"
-import { memo } from "react"
+import { DAYS_OF_WEEK } from "@/utils";
+import { memo } from "react";
 
-const TableRow = memo(({ time }:{time:string}) => {
+const TableRow = memo(({ time }: { time: string }) => {
   return (
     <tr className="relative select-none h-5 " key={time}>
       <td className="absolute transform -translate-y-1/2 flex justify-end px-2 items-center text-sm w-16">
@@ -14,11 +14,11 @@ const TableRow = memo(({ time }:{time:string}) => {
         />
       ))}
     </tr>
-  )
-})
+  );
+});
 
 export const WeekCalendarSkeleton = () => (
-  <div className="overflow-hidden rounded-lg shadow-lg">
+  <div className="hidden lg:block overflow-hidden rounded-lg shadow-lg">
     <table className="table-fixed bg-slate-100 p-5 border border-slate-300 shadow-md rounded-lg w-full">
       <thead>
         <tr className="border">
@@ -63,13 +63,13 @@ export const WeekCalendarSkeleton = () => (
         {Array(34)
           .fill(null)
           .map((_, i) => {
-            const hour = Math.floor(i / 2) + 7
-            const minute = i % 2 === 0 ? "00" : "30"
-            const time = `${hour.toString().padStart(2, "0")}:${minute}`
+            const hour = Math.floor(i / 2) + 7;
+            const minute = i % 2 === 0 ? "00" : "30";
+            const time = `${hour.toString().padStart(2, "0")}:${minute}`;
 
-            return <TableRow time={time} />
+            return <TableRow time={time} />;
           })}
       </tbody>
     </table>
   </div>
-)
+);

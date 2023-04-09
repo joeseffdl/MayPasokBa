@@ -1,31 +1,38 @@
-"use client";
-
-import { DataContext } from "@/utils/context";
 import { scheduleProps } from "@/utils/types";
 import Image from "next/image";
-import { useContext, useMemo } from "react";
+import { useMemo } from "react";
 
-export const Event = () => {
-  const { firebaseData, setFirebaseData } = useContext<any>(DataContext);
+type EventProps = {
+  children?: React.ReactNode;
+  firebaseData: any;
+  modifiedSchedules: scheduleProps[];
+  openModalInformation: (schedule: scheduleProps) => void;
+};
 
+export const Event = ({
+  firebaseData,
+  children,
+  modifiedSchedules,
+  openModalInformation,
+}: EventProps) => {
   const countStatusTypes = useMemo(() => {
     const counts: Record<string, number> = {
       "No Information": 0,
-      "Online": 0,
+      Online: 0,
       "Face to Face": 0,
-      "Asynchronous": 0,
+      Asynchronous: 0,
       "No Classes": 0,
-    }
+    };
 
-    firebaseData?.modifiedSchedules.forEach((obj:scheduleProps) => {
-      const status: string | undefined = obj.status
+    firebaseData?.modifiedSchedules.forEach((obj: scheduleProps) => {
+      const status: string | undefined = obj.status;
       if (status && status in counts) {
-        counts[status]++
+        counts[status]++;
       }
-    })
+    });
 
-    return counts
-  }, [firebaseData?.modifiedSchedules])
+    return counts;
+  }, [firebaseData?.modifiedSchedules]);
 
   return (
     <div className="flex items-center justify-center ">
@@ -61,71 +68,72 @@ export const Event = () => {
           <div className="flex flex-col divide-y-2 divide-gray-500">
             <div className="w-full py-5 gap-2 flex flex-col">
               <div className="font-bold text-lg text-gray-700">Tuesday</div>
-              {firebaseData?.modifiedEvents
-                ?.slice(0, 4)
-                .map((data: scheduleProps) => {
-                  return (
-                    <div
-                      className={`${
-                        data.status === "No Information"
-                          ? "hover:bg-sky-200 bg-sky-100"
-                          : data.status === "Online"
-                          ? "hover:bg-emerald-200 bg-emerald-100"
-                          : data.status === "Face to Face"
-                          ? "hover:bg-fuchsia-200 bg-fuchsia-100"
-                          : data.status === "Asynchronous"
-                          ? "hover:bg-amber-200 bg-amber-100"
-                          : data.status === "No Classes"
-                          ? "hover:bg-rose-200 bg-rose-100"
-                          : "hover:bg-sky-200 bg-sky-100"
-                      } w-full rounded-lg shadow-md px-4 py-2`}
-                    >
-                      <div className="flex flex-col w-full ">
-                        <span
-                          className={`${
-                            data.status === "No Information"
-                              ? "text-sky-800"
-                              : data.status === "Online"
-                              ? "text-emerald-800"
-                              : data.status === "Face to Face"
-                              ? "text-fuchsia-800"
-                              : data.status === "Asynchronous"
-                              ? "text-amber-800"
-                              : data.status === "No Classes"
-                              ? "text-rose-800"
-                              : "text-sky-800"
-                          } font-semibold w-1/2`}
-                        >
-                          {data.subject}
-                        </span>
-                        <div
-                          className={`${
-                            data.status === "No Information"
-                              ? "text-sky-500"
-                              : data.status === "Online"
-                              ? "text-emerald-500"
-                              : data.status === "Face to Face"
-                              ? "text-fuchsia-500"
-                              : data.status === "Asynchronous"
-                              ? "text-amber-500"
-                              : data.status === "No Classes"
-                              ? "text-rose-500"
-                              : "text-sky-500"
-                          }`}
-                        >
-                          {data.startTime} - {data.endTime}
-                        </div>
-                      </div>
-
-                      <div className="text-lg w-full flex justify-end font-semibold">
-                        {data.status}
+              {modifiedSchedules?.slice(0, 4).map((data: scheduleProps) => {
+                return (
+                  <div
+                    className={`${
+                      data.status === "No Information"
+                        ? "hover:bg-sky-200 bg-sky-100"
+                        : data.status === "Online"
+                        ? "hover:bg-emerald-200 bg-emerald-100"
+                        : data.status === "Face to Face"
+                        ? "hover:bg-fuchsia-200 bg-fuchsia-100"
+                        : data.status === "Asynchronous"
+                        ? "hover:bg-amber-200 bg-amber-100"
+                        : data.status === "No Classes"
+                        ? "hover:bg-rose-200 bg-rose-100"
+                        : "hover:bg-sky-200 bg-sky-100"
+                    } w-full rounded-lg shadow-md px-4 py-2`}
+                    onClick={() => {
+                      openModalInformation({ ...data });
+                    }}
+                  >
+                    <div className="flex flex-col w-full ">
+                      <span
+                        className={`${
+                          data.status === "No Information"
+                            ? "text-sky-800"
+                            : data.status === "Online"
+                            ? "text-emerald-800"
+                            : data.status === "Face to Face"
+                            ? "text-fuchsia-800"
+                            : data.status === "Asynchronous"
+                            ? "text-amber-800"
+                            : data.status === "No Classes"
+                            ? "text-rose-800"
+                            : "text-sky-800"
+                        } font-semibold w-1/2`}
+                      >
+                        {data.subject}
+                      </span>
+                      <div
+                        className={`${
+                          data.status === "No Information"
+                            ? "text-sky-500"
+                            : data.status === "Online"
+                            ? "text-emerald-500"
+                            : data.status === "Face to Face"
+                            ? "text-fuchsia-500"
+                            : data.status === "Asynchronous"
+                            ? "text-amber-500"
+                            : data.status === "No Classes"
+                            ? "text-rose-500"
+                            : "text-sky-500"
+                        }`}
+                      >
+                        {data.startTime} - {data.endTime}
                       </div>
                     </div>
-                  );
-                })}
+
+                    <div className="text-lg w-full flex justify-end font-semibold">
+                      {data.status}
+                    </div>
+                  </div>
+                );
+              })}
               {/* <div>
                 {Object.entries(
-                  countStatusTypes(firebaseData?.modifiedEvents.slice(4, 5))
+                  countStatusTypes(modifiedSchedules.slice(4, 5))
                 ).map(([key, value]) => (
                   <div key={key}>
                     {key}: {value}
@@ -135,202 +143,197 @@ export const Event = () => {
             </div>
             <div className="w-full py-5 gap-2 flex flex-col">
               <div className="font-bold text-lg text-gray-700">Wednesday</div>
-              {firebaseData?.modifiedEvents
-                ?.slice(4, 5)
-                .map((data: scheduleProps) => {
-                  return (
-                    <div
-                      className={`${
-                        data.status === "No Information"
-                          ? "hover:bg-sky-200 bg-sky-100"
-                          : data.status === "Online"
-                          ? "hover:bg-emerald-200 bg-emerald-100"
-                          : data.status === "Face to Face"
-                          ? "hover:bg-fuchsia-200 bg-fuchsia-100"
-                          : data.status === "Asynchronous"
-                          ? "hover:bg-amber-200 bg-amber-100"
-                          : data.status === "No Classes"
-                          ? "hover:bg-rose-200 bg-rose-100"
-                          : "hover:bg-sky-200 bg-sky-100"
-                      } w-full rounded-lg shadow-md px-4 py-2`}
-                    >
-                      <div className="flex flex-col w-full ">
-                        <span
-                          className={`${
-                            data.status === "No Information"
-                              ? "text-sky-800"
-                              : data.status === "Online"
-                              ? "text-emerald-800"
-                              : data.status === "Face to Face"
-                              ? "text-fuchsia-800"
-                              : data.status === "Asynchronous"
-                              ? "text-amber-800"
-                              : data.status === "No Classes"
-                              ? "text-rose-800"
-                              : "text-sky-800"
-                          } font-semibold w-1/2`}
-                        >
-                          {data.subject}
-                        </span>
-                        <div
-                          className={`${
-                            data.status === "No Information"
-                              ? "text-sky-500"
-                              : data.status === "Online"
-                              ? "text-emerald-500"
-                              : data.status === "Face to Face"
-                              ? "text-fuchsia-500"
-                              : data.status === "Asynchronous"
-                              ? "text-amber-500"
-                              : data.status === "No Classes"
-                              ? "text-rose-500"
-                              : "text-sky-500"
-                          }`}
-                        >
-                          {data.startTime} - {data.endTime}
-                        </div>
-                      </div>
-
-                      <div className="text-lg w-full flex justify-end font-semibold">
-                        {data.status}
+              {modifiedSchedules?.slice(4, 5).map((data: scheduleProps) => {
+                return (
+                  <div
+                    className={`${
+                      data.status === "No Information"
+                        ? "hover:bg-sky-200 bg-sky-100"
+                        : data.status === "Online"
+                        ? "hover:bg-emerald-200 bg-emerald-100"
+                        : data.status === "Face to Face"
+                        ? "hover:bg-fuchsia-200 bg-fuchsia-100"
+                        : data.status === "Asynchronous"
+                        ? "hover:bg-amber-200 bg-amber-100"
+                        : data.status === "No Classes"
+                        ? "hover:bg-rose-200 bg-rose-100"
+                        : "hover:bg-sky-200 bg-sky-100"
+                    } w-full rounded-lg shadow-md px-4 py-2`}
+                  >
+                    <div className="flex flex-col w-full ">
+                      <span
+                        className={`${
+                          data.status === "No Information"
+                            ? "text-sky-800"
+                            : data.status === "Online"
+                            ? "text-emerald-800"
+                            : data.status === "Face to Face"
+                            ? "text-fuchsia-800"
+                            : data.status === "Asynchronous"
+                            ? "text-amber-800"
+                            : data.status === "No Classes"
+                            ? "text-rose-800"
+                            : "text-sky-800"
+                        } font-semibold w-1/2`}
+                      >
+                        {data.subject}
+                      </span>
+                      <div
+                        className={`${
+                          data.status === "No Information"
+                            ? "text-sky-500"
+                            : data.status === "Online"
+                            ? "text-emerald-500"
+                            : data.status === "Face to Face"
+                            ? "text-fuchsia-500"
+                            : data.status === "Asynchronous"
+                            ? "text-amber-500"
+                            : data.status === "No Classes"
+                            ? "text-rose-500"
+                            : "text-sky-500"
+                        }`}
+                      >
+                        {data.startTime} - {data.endTime}
                       </div>
                     </div>
-                  );
-                })}
+
+                    <div className="text-lg w-full flex justify-end font-semibold">
+                      {data.status}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
             <div className="w-full py-5 gap-2 flex flex-col">
               <div className="font-bold text-lg text-gray-700">Thursday</div>
-              {firebaseData?.modifiedEvents
-                ?.slice(5, 6)
-                .map((data: scheduleProps) => {
-                  return (
-                    <div
-                      className={`${
-                        data.status === "No Information"
-                          ? "hover:bg-sky-200 bg-sky-100"
-                          : data.status === "Online"
-                          ? "hover:bg-emerald-200 bg-emerald-100"
-                          : data.status === "Face to Face"
-                          ? "hover:bg-fuchsia-200 bg-fuchsia-100"
-                          : data.status === "Asynchronous"
-                          ? "hover:bg-amber-200 bg-amber-100"
-                          : data.status === "No Classes"
-                          ? "hover:bg-rose-200 bg-rose-100"
-                          : "hover:bg-sky-200 bg-sky-100"
-                      } w-full rounded-lg shadow-md px-4 py-2`}
-                    >
-                      <div className="flex flex-col w-full ">
-                        <span
-                          className={`${
-                            data.status === "No Information"
-                              ? "text-sky-800"
-                              : data.status === "Online"
-                              ? "text-emerald-800"
-                              : data.status === "Face to Face"
-                              ? "text-fuchsia-800"
-                              : data.status === "Asynchronous"
-                              ? "text-amber-800"
-                              : data.status === "No Classes"
-                              ? "text-rose-800"
-                              : "text-sky-800"
-                          } font-semibold w-1/2`}
-                        >
-                          {data.subject}
-                        </span>
-                        <div
-                          className={`${
-                            data.status === "No Information"
-                              ? "text-sky-500"
-                              : data.status === "Online"
-                              ? "text-emerald-500"
-                              : data.status === "Face to Face"
-                              ? "text-fuchsia-500"
-                              : data.status === "Asynchronous"
-                              ? "text-amber-500"
-                              : data.status === "No Classes"
-                              ? "text-rose-500"
-                              : "text-sky-500"
-                          }`}
-                        >
-                          {data.startTime} - {data.endTime}
-                        </div>
-                      </div>
-
-                      <div className="text-lg w-full flex justify-end font-semibold">
-                        {data.status}
+              {modifiedSchedules?.slice(5, 6).map((data: scheduleProps) => {
+                return (
+                  <div
+                    className={`${
+                      data.status === "No Information"
+                        ? "hover:bg-sky-200 bg-sky-100"
+                        : data.status === "Online"
+                        ? "hover:bg-emerald-200 bg-emerald-100"
+                        : data.status === "Face to Face"
+                        ? "hover:bg-fuchsia-200 bg-fuchsia-100"
+                        : data.status === "Asynchronous"
+                        ? "hover:bg-amber-200 bg-amber-100"
+                        : data.status === "No Classes"
+                        ? "hover:bg-rose-200 bg-rose-100"
+                        : "hover:bg-sky-200 bg-sky-100"
+                    } w-full rounded-lg shadow-md px-4 py-2`}
+                  >
+                    <div className="flex flex-col w-full ">
+                      <span
+                        className={`${
+                          data.status === "No Information"
+                            ? "text-sky-800"
+                            : data.status === "Online"
+                            ? "text-emerald-800"
+                            : data.status === "Face to Face"
+                            ? "text-fuchsia-800"
+                            : data.status === "Asynchronous"
+                            ? "text-amber-800"
+                            : data.status === "No Classes"
+                            ? "text-rose-800"
+                            : "text-sky-800"
+                        } font-semibold w-1/2`}
+                      >
+                        {data.subject}
+                      </span>
+                      <div
+                        className={`${
+                          data.status === "No Information"
+                            ? "text-sky-500"
+                            : data.status === "Online"
+                            ? "text-emerald-500"
+                            : data.status === "Face to Face"
+                            ? "text-fuchsia-500"
+                            : data.status === "Asynchronous"
+                            ? "text-amber-500"
+                            : data.status === "No Classes"
+                            ? "text-rose-500"
+                            : "text-sky-500"
+                        }`}
+                      >
+                        {data.startTime} - {data.endTime}
                       </div>
                     </div>
-                  );
-                })}
+
+                    <div className="text-lg w-full flex justify-end font-semibold">
+                      {data.status}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
             <div className="w-full py-5 gap-2 flex flex-col">
               <div className="font-bold text-lg text-gray-700">Saturday</div>
-              {firebaseData?.modifiedEvents
-                ?.slice(6, 10)
-                .map((data: scheduleProps) => {
-                  return (
-                    <div
-                      className={`${
-                        data.status === "No Information"
-                          ? "hover:bg-sky-200 bg-sky-100"
-                          : data.status === "Online"
-                          ? "hover:bg-emerald-200 bg-emerald-100"
-                          : data.status === "Face to Face"
-                          ? "hover:bg-fuchsia-200 bg-fuchsia-100"
-                          : data.status === "Asynchronous"
-                          ? "hover:bg-amber-200 bg-amber-100"
-                          : data.status === "No Classes"
-                          ? "hover:bg-rose-200 bg-rose-100"
-                          : "hover:bg-sky-200 bg-sky-100"
-                      } w-full rounded-lg shadow-md px-4 py-2`}
-                    >
-                      <div className="flex flex-col w-full ">
-                        <span
-                          className={`${
-                            data.status === "No Information"
-                              ? "text-sky-800"
-                              : data.status === "Online"
-                              ? "text-emerald-800"
-                              : data.status === "Face to Face"
-                              ? "text-fuchsia-800"
-                              : data.status === "Asynchronous"
-                              ? "text-amber-800"
-                              : data.status === "No Classes"
-                              ? "text-rose-800"
-                              : "text-sky-800"
-                          } font-semibold w-1/2`}
-                        >
-                          {data.subject}
-                        </span>
-                        <div
-                          className={`${
-                            data.status === "No Information"
-                              ? "text-sky-500"
-                              : data.status === "Online"
-                              ? "text-emerald-500"
-                              : data.status === "Face to Face"
-                              ? "text-fuchsia-500"
-                              : data.status === "Asynchronous"
-                              ? "text-amber-500"
-                              : data.status === "No Classes"
-                              ? "text-rose-500"
-                              : "text-sky-500"
-                          }`}
-                        >
-                          {data.startTime} - {data.endTime}
-                        </div>
-                      </div>
-
-                      <div className="text-lg w-full flex justify-end font-semibold">
-                        {data.status}
+              {modifiedSchedules?.slice(6, 10).map((data: scheduleProps) => {
+                return (
+                  <div
+                    className={`${
+                      data.status === "No Information"
+                        ? "hover:bg-sky-200 bg-sky-100"
+                        : data.status === "Online"
+                        ? "hover:bg-emerald-200 bg-emerald-100"
+                        : data.status === "Face to Face"
+                        ? "hover:bg-fuchsia-200 bg-fuchsia-100"
+                        : data.status === "Asynchronous"
+                        ? "hover:bg-amber-200 bg-amber-100"
+                        : data.status === "No Classes"
+                        ? "hover:bg-rose-200 bg-rose-100"
+                        : "hover:bg-sky-200 bg-sky-100"
+                    } w-full rounded-lg shadow-md px-4 py-2`}
+                  >
+                    <div className="flex flex-col w-full ">
+                      <span
+                        className={`${
+                          data.status === "No Information"
+                            ? "text-sky-800"
+                            : data.status === "Online"
+                            ? "text-emerald-800"
+                            : data.status === "Face to Face"
+                            ? "text-fuchsia-800"
+                            : data.status === "Asynchronous"
+                            ? "text-amber-800"
+                            : data.status === "No Classes"
+                            ? "text-rose-800"
+                            : "text-sky-800"
+                        } font-semibold w-1/2`}
+                      >
+                        {data.subject}
+                      </span>
+                      <div
+                        className={`${
+                          data.status === "No Information"
+                            ? "text-sky-500"
+                            : data.status === "Online"
+                            ? "text-emerald-500"
+                            : data.status === "Face to Face"
+                            ? "text-fuchsia-500"
+                            : data.status === "Asynchronous"
+                            ? "text-amber-500"
+                            : data.status === "No Classes"
+                            ? "text-rose-500"
+                            : "text-sky-500"
+                        }`}
+                      >
+                        {data.startTime} - {data.endTime}
                       </div>
                     </div>
-                  );
-                })}
+
+                    <div className="text-lg w-full flex justify-end font-semibold">
+                      {data.status}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
       </div>
+      {children}
     </div>
   );
 };

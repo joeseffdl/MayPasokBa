@@ -1,45 +1,45 @@
-"use client"
+"use client";
 
 import {
   GoogleAuthProvider,
   signInWithPopup,
   signInWithRedirect,
-} from "firebase/auth"
-import { useEffect } from "react"
-import { useRouter } from "next/navigation"
-import { FcGoogle } from "react-icons/fc"
-import { toast } from "react-hot-toast"
-import { auth } from "../../utils/firebase"
-import { useAuthState } from "react-firebase-hooks/auth"
+} from "firebase/auth";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { FcGoogle } from "react-icons/fc";
+import { toast } from "react-hot-toast";
+import { auth } from "../../utils/firebase";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 export default function Login() {
   // Router
-  const router = useRouter()
-  const [user, loading] = useAuthState(auth)
+  const router = useRouter();
+  const [user, loading] = useAuthState(auth);
 
   // Sign in with Google
-  const googleProvider = new GoogleAuthProvider()
+  const googleProvider = new GoogleAuthProvider();
   const GoogleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+    e.preventDefault();
     try {
-      const result = await signInWithRedirect(auth, googleProvider)
+      const result = await signInWithRedirect(auth, googleProvider);
       if (user) {
-        toast.success("Successfully signed in with your Google account! 🎉")
-        router.push("/")
+        toast.success("Successfully signed in with your Google account! 🎉");
+        router.push("/");
       }
     } catch (err) {
       toast.error(
         "There was an error while signing in with your Google account ☹️"
-      )
-      console.log(err)
+      );
+      console.log(err);
     }
-  }
+  };
 
   useEffect(() => {
     if (user) {
-      router.push("/")
+      router.push("/");
     }
-  }, [user])
+  }, [user]);
 
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100 p-8 sm:px-16 lg:px-32">
@@ -61,5 +61,5 @@ export default function Login() {
         </div>
       </form>
     </div>
-  )
+  );
 }

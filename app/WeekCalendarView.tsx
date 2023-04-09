@@ -25,6 +25,7 @@ import { toast } from "react-hot-toast";
 import { EventModal } from "./EventModal";
 import { WeekCalendarSkeleton } from "./WeekCalendarSkeleton";
 import { DataContext } from "@/utils/context";
+import { Event } from "./Event";
 
 export const WeekCalendarView = ({}) => {
   const router = useRouter();
@@ -108,121 +109,123 @@ export const WeekCalendarView = ({}) => {
   return (
     <>
       {!loading ? (
-        <div className="overflow-hidden rounded-lg shadow-lg">
-          <table className="table-fixed bg-slate-100 p-5 border border-slate-300 shadow-md rounded-lg w-full">
-            <thead>
-              <tr className="border">
-                <th className="w-16 h-10 p-2 border" />
-                <th className="text-xs text-gray-900" colSpan={2}>
-                  Scheduled by {""}
-                  <span className="uppercase">{firebaseData?.username}</span>
-                  <br />
-                  <span className="text-[10px]">
-                    {new Date(firebaseData?.createdOn?.toMillis())
-                      .toDateString()
-                      .split(" ")
-                      .slice(1)
-                      .join(" ")}
-                  </span>
-                </th>
-                <th />
-                <th />
-                <th />
-                <th className="p-2">
-                  <button
-                    disabled={modifiedSchedules?.every(
-                      (event) => event.status === "No Information"
-                    )}
-                    className={`disabled:cursor-not-allowed disabled:opacity-50 bg-indigo-700 h-10 text-center text-white text-xs rounded-lg font-semibold px-4 py-2`}
-                    onClick={clearEvents}
-                  >
-                    {(
-                      countNoInformation() == 10
-                      ? "Clear"
-                      : countNoInformation() == 9
-                      ? "Clear Event"
-                      : "Clear Events"
-                    )}
-                  </button>
-                </th>
-                <th className="p-2">
-                  <button
-                    disabled={CompareArraysOfObjects(
-                      scheduleFromDB,
-                      modifiedSchedules
-                    )}
-                    className={`disabled:cursor-not-allowed disabled:opacity-50 bg-indigo-700 h-10 text-center text-white text-xs rounded-lg font-semibold px-4 py-2`}
-                    onClick={saveEvents}
-                  >
-                    {countNoInformation() == 10
-                      ? "Save"
-                      : countNoInformation() == 9
-                      ? "Save Event"
-                      : "Save Events"}
-                  </button>
-                </th>
-              </tr>
-              <tr>
-                <th className="w-16"></th>
-                {DAYS_OF_WEEK.map((day) => (
-                  <th
-                    className={`w-1/6 sm:w-auto py-2 text-slate-600 border border-b-2 border-b-slate-300 `}
-                    key={day}
-                  >
-                    <span className="font-semibold text-sm">
-                      {day.slice(0, 3)}
+        <>
+          <div className="hidden lg:block overflow-hidden rounded-lg shadow-lg">
+            <table className="table-fixed bg-slate-100 p-5 border border-slate-300 shadow-md rounded-lg w-full">
+              <thead>
+                <tr className="border">
+                  <th className="w-16 h-10 p-2 border" />
+                  <th className="text-xs text-gray-900" colSpan={2}>
+                    Scheduled by {""}
+                    <span className="uppercase">{firebaseData?.username}</span>
+                    <br />
+                    <span className="text-[10px]">
+                      {new Date(firebaseData?.createdOn?.toMillis())
+                        .toDateString()
+                        .split(" ")
+                        .slice(1)
+                        .join(" ")}
                     </span>
                   </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {Array(34)
-                .fill(null)
-                .map((_, i) => {
-                  const hour = Math.floor(i / 2) + 7
-                  const minute = i % 2 === 0 ? "00" : "30"
-                  const time = `${hour.toString().padStart(2, "0")}:${minute}`
+                  <th />
+                  <th />
+                  <th />
+                  <th className="p-2">
+                    <button
+                      disabled={modifiedSchedules?.every(
+                        (event) => event.status === "No Information"
+                      )}
+                      className={`disabled:cursor-not-allowed disabled:opacity-50 bg-indigo-700 h-10 text-center text-white text-xs rounded-lg font-semibold px-4 py-2`}
+                      onClick={clearEvents}
+                    >
+                      {countNoInformation() == 10
+                        ? "Clear"
+                        : countNoInformation() == 9
+                        ? "Clear Event"
+                        : "Clear Events"}
+                    </button>
+                  </th>
+                  <th className="p-2">
+                    <button
+                      disabled={CompareArraysOfObjects(
+                        scheduleFromDB,
+                        modifiedSchedules
+                      )}
+                      className={`disabled:cursor-not-allowed disabled:opacity-50 bg-indigo-700 h-10 text-center text-white text-xs rounded-lg font-semibold px-4 py-2`}
+                      onClick={saveEvents}
+                    >
+                      {countNoInformation() == 10
+                        ? "Save"
+                        : countNoInformation() == 9
+                        ? "Save Event"
+                        : "Save Events"}
+                    </button>
+                  </th>
+                </tr>
+                <tr>
+                  <th className="w-16"></th>
+                  {DAYS_OF_WEEK.map((day) => (
+                    <th
+                      className={`w-1/6 sm:w-auto py-2 text-slate-600 border border-b-2 border-b-slate-300 `}
+                      key={day}
+                    >
+                      <span className="font-semibold text-sm">
+                        {day.slice(0, 3)}
+                      </span>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {Array(34)
+                  .fill(null)
+                  .map((_, i) => {
+                    const hour = Math.floor(i / 2) + 7;
+                    const minute = i % 2 === 0 ? "00" : "30";
+                    const time = `${hour
+                      .toString()
+                      .padStart(2, "0")}:${minute}`;
 
-                  return (
-                    <tr className="relative select-none h-5 " key={time}>
-                      <td className="absolute transform -translate-y-1/2 flex justify-end px-2 items-center text-sm w-16">
-                        {time}
-                      </td>
-                      {DAYS_OF_WEEK.map((day) => {
-                        const events: scheduleProps[] = scheduleData[day] || []
-                        const event = events.find(
-                          (e: scheduleProps) => e.startTime === time
-                        )
-                        if (!event) {
+                    return (
+                      <tr className="relative select-none h-5 " key={time}>
+                        <td className="absolute transform -translate-y-1/2 flex justify-end px-2 items-center text-sm w-16">
+                          {time}
+                        </td>
+                        {DAYS_OF_WEEK.map((day) => {
+                          const events: scheduleProps[] =
+                            scheduleData[day] || [];
+                          const event = events.find(
+                            (e: scheduleProps) => e.startTime === time
+                          );
+                          if (!event) {
+                            return (
+                              <td
+                                key={`${day}-${time}`}
+                                className="h-[2.5rem] border border-gray-200"
+                              />
+                            );
+                          }
+                          const { startTime, endTime, subject, status, id } =
+                            event;
+                          const duration = TimeDifference(startTime, endTime);
+                          const style: React.CSSProperties = {
+                            height: `${(duration as number) * 5}rem`,
+                          };
+                          const checkStatus = modifiedSchedules?.find(
+                            (e) => e.id === id
+                          )?.status;
+
                           return (
                             <td
-                              key={`${day}-${time}`}
-                              className="h-[2.5rem] border border-gray-200"
-                            />
-                          )
-                        }
-                        const { startTime, endTime, subject, status, id } =
-                          event
-                        const duration = TimeDifference(startTime, endTime)
-                        const style: React.CSSProperties = {
-                          height: `${(duration as number) * 5}rem`,
-                        }
-                        const checkStatus = modifiedSchedules?.find(
-                          (e) => e.id === id
-                        )?.status
-
-                        return (
-                          <td
-                            key={`${day}-${time}-${subject}`}
-                            className="relative flex justify-center items-start cursor-pointer"
-                          >
-                            <div
-                              className="absolute w-full transparent p-1"
-                              style={style}
+                              key={`${day}-${time}-${subject}`}
+                              className="relative flex justify-center items-start cursor-pointer"
                             >
                               <div
-                                className={`text-xs rounded-lg w-full h-full 
+                                className="absolute w-full transparent p-1"
+                                style={style}
+                              >
+                                <div
+                                  className={`text-xs rounded-lg w-full h-full 
                         ${
                           checkStatus === "No Information"
                             ? "hover:bg-sky-200 bg-sky-100"
@@ -237,100 +240,122 @@ export const WeekCalendarView = ({}) => {
                             : "hover:bg-sky-200 bg-sky-100"
                         } 
                         p-2 flex items-center justify-center`}
-                              >
-                                <div
-                                  className={`${
-                                    modalState ? "-z-0" : "z-10"
-                                  } w-full h-full flex flex-col gap-1 `}
-                                  onClick={() =>
-                                    openModalInformation({
-                                      id,
-                                      status,
-                                      subject,
-                                      startTime,
-                                      endTime,
-                                    })
-                                  }
                                 >
                                   <div
                                     className={`${
-                                      checkStatus === "No Information"
-                                        ? "text-sky-800"
-                                        : checkStatus === "Online"
-                                        ? "text-emerald-800"
-                                        : checkStatus === "Face to Face"
-                                        ? "text-fuchsia-800"
-                                        : checkStatus === "Asynchronous"
-                                        ? "text-amber-800"
-                                        : checkStatus === "No Classes"
-                                        ? "text-rose-800"
-                                        : "text-sky-800"
-                                    } font-bold`}
+                                      modalState ? "-z-0" : "z-10"
+                                    } w-full h-full flex flex-col gap-1 `}
+                                    onClick={() =>
+                                      openModalInformation({
+                                        id,
+                                        status,
+                                        subject,
+                                        startTime,
+                                        endTime,
+                                      })
+                                    }
                                   >
-                                    {subject}
-                                  </div>
-                                  <div
-                                    className={`${
-                                      checkStatus === "No Information"
-                                        ? "text-sky-500"
-                                        : checkStatus === "Online"
-                                        ? "text-emerald-500"
-                                        : checkStatus === "Face to Face"
-                                        ? "text-fuchsia-500"
-                                        : checkStatus === "Asynchronous"
-                                        ? "text-amber-500"
-                                        : checkStatus === "No Classes"
-                                        ? "text-rose-500"
-                                        : "text-sky-500"
-                                    }`}
-                                  >
-                                    {startTime} - {endTime}
-                                  </div>
-                                  <div className="flex items-center font-semibold justify-center h-full uppercase text-slate-700 text-[10px] xl:text-xs">
-                                    {checkStatus ?? "No Information"}
-                                  </div>
-                                  <div
-                                    className={`${
-                                      checkStatus === "No Information"
-                                        ? "text-sky-600"
-                                        : checkStatus === "Online"
-                                        ? "text-emerald-600"
-                                        : checkStatus === "Face to Face"
-                                        ? "text-fuchsia-600"
-                                        : checkStatus === "Asynchronous"
-                                        ? "text-amber-600"
-                                        : checkStatus === "No Classes"
-                                        ? "text-rose-600"
-                                        : "text-sky-600"
-                                    } flex justify-end`}
-                                  >
-                                    {duration} hours
+                                    <div
+                                      className={`${
+                                        checkStatus === "No Information"
+                                          ? "text-sky-800"
+                                          : checkStatus === "Online"
+                                          ? "text-emerald-800"
+                                          : checkStatus === "Face to Face"
+                                          ? "text-fuchsia-800"
+                                          : checkStatus === "Asynchronous"
+                                          ? "text-amber-800"
+                                          : checkStatus === "No Classes"
+                                          ? "text-rose-800"
+                                          : "text-sky-800"
+                                      } font-bold`}
+                                    >
+                                      {subject}
+                                    </div>
+                                    <div
+                                      className={`${
+                                        checkStatus === "No Information"
+                                          ? "text-sky-500"
+                                          : checkStatus === "Online"
+                                          ? "text-emerald-500"
+                                          : checkStatus === "Face to Face"
+                                          ? "text-fuchsia-500"
+                                          : checkStatus === "Asynchronous"
+                                          ? "text-amber-500"
+                                          : checkStatus === "No Classes"
+                                          ? "text-rose-500"
+                                          : "text-sky-500"
+                                      }`}
+                                    >
+                                      {startTime} - {endTime}
+                                    </div>
+                                    <div className="flex items-center font-semibold justify-center h-full uppercase text-slate-700 text-[10px] xl:text-xs">
+                                      {checkStatus ?? "No Information"}
+                                    </div>
+                                    <div
+                                      className={`${
+                                        checkStatus === "No Information"
+                                          ? "text-sky-600"
+                                          : checkStatus === "Online"
+                                          ? "text-emerald-600"
+                                          : checkStatus === "Face to Face"
+                                          ? "text-fuchsia-600"
+                                          : checkStatus === "Asynchronous"
+                                          ? "text-amber-600"
+                                          : checkStatus === "No Classes"
+                                          ? "text-rose-600"
+                                          : "text-sky-600"
+                                      } flex justify-end`}
+                                    >
+                                      {duration} hours
+                                    </div>
                                   </div>
                                 </div>
                               </div>
-                            </div>
-                          </td>
-                        )
-                      })}
-                    </tr>
-                  )
-                })}
-            </tbody>
-          </table>
-          {modalState && (
-            <EventModal
-              {...selectedSchedule}
-              scheduleFromDB={scheduleFromDB}
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    );
+                  })}
+              </tbody>
+            </table>
+            {modalState && (
+              <EventModal
+                {...selectedSchedule}
+                scheduleFromDB={scheduleFromDB}
+                modifiedSchedules={modifiedSchedules}
+                setSelectedSchedule={setSelectedSchedule}
+                setModalState={setModalState}
+                setModifiedSchedules={setModifiedSchedules}
+              />
+            )}
+          </div>
+          <div className="w-full lg:hidden flex flex-col gap-5">
+            <div className="uppercase font-bold text-3xl text-center">
+              May F2F Ba?!?
+            </div>
+            <Event
+              firebaseData={firebaseData}
               modifiedSchedules={modifiedSchedules}
-              setSelectedSchedule={setSelectedSchedule}
-              setModalState={setModalState}
-              setModifiedSchedules={setModifiedSchedules}
-            />
-          )}
-        </div>
+              openModalInformation={openModalInformation}
+            >
+              {modalState && (
+                <EventModal
+                  {...selectedSchedule}
+                  scheduleFromDB={scheduleFromDB}
+                  modifiedSchedules={modifiedSchedules}
+                  setSelectedSchedule={setSelectedSchedule}
+                  setModalState={setModalState}
+                  setModifiedSchedules={setModifiedSchedules}
+                />
+              )}
+            </Event>
+          </div>
+        </>
       ) : (
         <WeekCalendarSkeleton />
       )}
     </>
-  )
+  );
 };
