@@ -99,16 +99,16 @@ export const EventModal = ({
   }
 
   return (
-    <div className="absolute top-0 left-0 w-full bg-gray-500/50 h-full ">
+    <div className="fixed top-0 left-0 w-full h-full bg-gray-500/50">
       <div className="h-screen flex justify-center items-center">
         <form
-          className="bg-white w-1/4 h-1/4 rounded-2xl"
+          className="bg-white w-[320px] lg:w-[480px] lg:h-[220px] rounded-2xl"
           onClick={(event) => event.stopPropagation()}
         >
           <div className="w-full h-full flex flex-col justify-between rounded-xl">
-            <div className="flex flex-col gap-2 p-5">
+            <div className="flex flex-col gap-2 p-5 lg:p-6">
               <div className="relative flex justify-between">
-                <h2 className="text-lg font-bold">Edit Schedule</h2>
+                <h2 className="text-lg font-bold lg:text-3xl">Edit Schedule</h2>
                 {!compareSchedule && (
                   <span
                     className="absolute transform -translate-y-1/2 right-0"
@@ -126,13 +126,13 @@ export const EventModal = ({
                   </span>
                 )}
               </div>
-              <div className="flex flex-col 2xl:flex-row text-sm 2xl:text-base justify-between gap-1">
+              <div className="flex flex-col text-sm lg:text-xl justify-between gap-1">
                 <label className="font-semibold">{subject}</label>
                 <span>
                   {startTime} - {endTime}
                 </span>
               </div>
-              <div className=" flex justify-between text-sm 2xl:text-base">
+              <div className="flex justify-between text-sm lg:text-lg">
                 <label>Status</label>
                 <select
                   value={modifiedSchedules.find((e) => e.id === id)?.status}
@@ -146,9 +146,9 @@ export const EventModal = ({
                 </select>
               </div>
             </div>
-            <div className="flex justify-end p-2 bg-indigo-300 rounded-b-xl">
+            <div className="flex justify-end p-2 lg:px-4 bg-indigo-300 rounded-b-xl">
               <button
-                className=" w-fit px-4 py-2 bg-blue-500 rounded-lg text-sm text-white font-semibold"
+                className=" w-fit px-4 py-2 lg:py-3 lg:px-5 bg-blue-500 rounded-lg text-sm lg:text-base text-white font-semibold"
                 type="submit"
                 onClick={
                   compareSchedule ? (e) => closeModal() : (e) => applyChanges(e)
