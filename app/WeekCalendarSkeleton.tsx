@@ -1,6 +1,11 @@
 import { DAYS_OF_WEEK } from "@/utils";
 import { memo } from "react";
 import { SkeletonCard } from "./SkeletonCard";
+import { scheduleProps } from "@/utils/types";
+
+type MobileSkeletonProps = {
+  modifiedSchedules: scheduleProps[];
+};
 
 const TableRow = memo(({ time }: { time: string }) => {
   return (
@@ -15,7 +20,7 @@ const TableRow = memo(({ time }: { time: string }) => {
   );
 });
 
-export const WeekCalendarSkeleton = () => (
+export const WeekCalendarSkeleton = ({ modifiedSchedules }: MobileSkeletonProps) => (
   <>
     <div className="hidden lg:block overflow-hidden rounded-lg shadow-lg">
       <table className="table-fixed bg-slate-100 p-5 border border-slate-300 shadow-md rounded-lg w-full">
@@ -72,20 +77,20 @@ export const WeekCalendarSkeleton = () => (
       </table>
     </div>
     <div className="w-full lg:hidden flex flex-col gap-5">
-      <div className="uppercase font-bold text-3xl text-center">May F2F Ba!?!</div>
+      <div className="uppercase font-bold text-3xl text-center">May F2F Ba?!?</div>
       <div className="relative flex items-center justify-center">
         <div className="max-w-xl w-full drop-shadow-xl">
           <div className="h-full p-10 bg-slate-100  rounded-lg flex flex-col">
             <div className="pb-5">
-              <div className="w-full font-bold text-2xl text-neutral-900">This week's schedule</div>
+              <div className="w-full font-bold text-2xl text-neutral-900 text-center">
+                This week's schedule
+              </div>
             </div>
             <div className="flex flex-col items-center justify-center">
               <div className="flex gap-2 w-full flex-col">
-                <SkeletonCard />
-                <SkeletonCard />
-                <SkeletonCard />
-                <SkeletonCard />
-                <SkeletonCard />
+                {modifiedSchedules.map((schedule) => (
+                  <SkeletonCard key={schedule.id} />
+                ))}
               </div>
             </div>
           </div>
