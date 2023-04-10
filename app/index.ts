@@ -1,4 +1,3 @@
-import { Event } from "./Event";
-import { WeekCalendarView } from "./WeekCalendarView";
+import { WeekCalendarView } from "./WeekCalendarView"
 
-export { Event, WeekCalendarView };
+export { WeekCalendarView }

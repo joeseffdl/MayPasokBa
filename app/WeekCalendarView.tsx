@@ -1,14 +1,14 @@
-"use client";
+"use client"
 
 import {
   CompareArraysOfObjects,
   DAYS_OF_WEEK,
   SCHEDULE_DATA_OBJECT,
   TimeDifference,
-} from "@/utils/";
-import { SCHEDULE_ARRAY } from "@/utils/SCHEDULE_ARRAY";
-import { auth, db } from "@/utils/firebase";
-import { scheduleProps } from "@/utils/types";
+} from "@/utils/"
+import { SCHEDULE_ARRAY } from "@/utils/SCHEDULE_ARRAY"
+import { auth, db } from "@/utils/firebase"
+import { scheduleProps } from "@/utils/types"
 import {
   addDoc,
   collection,
@@ -17,32 +17,33 @@ import {
   orderBy,
   query,
   serverTimestamp,
-} from "firebase/firestore";
-import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState, useContext } from "react";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { toast } from "react-hot-toast";
-import { EventModal } from "./EventModal";
-import { WeekCalendarSkeleton } from "./WeekCalendarSkeleton";
-import { DataContext } from "@/utils/context";
-import { Event } from "./Event";
+} from "firebase/firestore"
+import { useRouter } from "next/navigation"
+import { useCallback, useEffect, useMemo, useState, useContext } from "react"
+import { useAuthState } from "react-firebase-hooks/auth"
+import { toast } from "react-hot-toast"
+import { EventModal } from "./EventModal"
+import { WeekCalendarSkeleton } from "./WeekCalendarSkeleton"
+import { DataContext } from "@/utils/context"
+import { WeekCalendarMobileView } from "./WeekCalendarMobileView"
+import { AiOutlineSave, AiOutlineClear } from "react-icons/ai"
 
 export const WeekCalendarView = ({}) => {
-  const router = useRouter();
-  const [user, loading] = useAuthState(auth);
-  const { firebaseData, setFirebaseData } = useContext<any>(DataContext);
+  const router = useRouter()
+  const [user, loading] = useAuthState(auth)
+  const { firebaseData, setFirebaseData } = useContext<any>(DataContext)
   const [selectedSchedule, setSelectedSchedule] = useState<scheduleProps>({
     id: 0,
     status: "",
     subject: "",
     startTime: "",
     endTime: "",
-  });
+  })
   const [modifiedSchedules, setModifiedSchedules] =
-    useState<scheduleProps[]>(SCHEDULE_ARRAY);
-  const [scheduleFromDB, setScheduleFromDB] = useState<scheduleProps[]>([]);
-  const [modalState, setModalState] = useState(false);
-  const scheduleData = useMemo(() => SCHEDULE_DATA_OBJECT, []);
+    useState<scheduleProps[]>(SCHEDULE_ARRAY)
+  const [scheduleFromDB, setScheduleFromDB] = useState<scheduleProps[]>([])
+  const [modalState, setModalState] = useState(false)
+  const scheduleData = useMemo(() => SCHEDULE_DATA_OBJECT, [])
 
   // Avoid calling openModalInformation on every render by using useCallback to memoize the function.
   const openModalInformation = useCallback(
@@ -53,58 +54,58 @@ export const WeekCalendarView = ({}) => {
         subject,
         startTime,
         endTime,
-      });
-      setModalState(true);
+      })
+      setModalState(true)
     },
     []
-  );
+  )
 
   async function saveEvents() {
-    if (!user) return router.push("/Login");
+    if (!user) return router.push("/Login")
     else {
-      const scheduleRef = collection(db, "schedules");
+      const scheduleRef = collection(db, "schedules")
       await addDoc(scheduleRef, {
         createdOn: serverTimestamp(),
         user: user.uid,
         username: user.displayName,
         avatar: user.photoURL,
         modifiedEvents: modifiedSchedules,
-      });
+      })
     }
-    toast.success("Schedule saved successfully 🚀");
+    toast.success("Schedule saved successfully 🚀")
   }
 
   function clearEvents() {
-    setModifiedSchedules(SCHEDULE_ARRAY);
-    toast.success("Schedule cleared 📆");
+    setModifiedSchedules(SCHEDULE_ARRAY)
+    toast.success("Schedule cleared 📆")
   }
 
   function countNoInformation(): number {
     return modifiedSchedules
       .map((obj) => obj.status)
-      .reduce((acc, curr) => (curr === "No Information" ? acc + 1 : acc), 0);
+      .reduce((acc, curr) => (curr === "No Information" ? acc + 1 : acc), 0)
   }
 
   const getScheduleData = async () => {
     try {
-      const docRef = collection(db, "schedules");
-      const q = query(docRef, orderBy("createdOn", "desc"), limit(1));
+      const docRef = collection(db, "schedules")
+      const q = query(docRef, orderBy("createdOn", "desc"), limit(1))
       const unsubscribe = await onSnapshot(q, (querySnapshot) => {
         const data = querySnapshot.docs.map((doc) => {
-          setFirebaseData(doc.data());
-          setModifiedSchedules(doc.data().modifiedEvents);
-          setScheduleFromDB(doc.data().modifiedEvents);
-        });
-      });
-      return unsubscribe;
+          setFirebaseData(doc.data())
+          setModifiedSchedules(doc.data().modifiedEvents)
+          setScheduleFromDB(doc.data().modifiedEvents)
+        })
+      })
+      return unsubscribe
     } catch (err) {
-      console.log(err);
+      console.log(err)
     }
-  };
+  }
 
   useEffect(() => {
-    getScheduleData();
-  }, []);
+    getScheduleData()
+  }, [])
 
   return (
     <>
@@ -180,11 +181,9 @@ export const WeekCalendarView = ({}) => {
                 {Array(34)
                   .fill(null)
                   .map((_, i) => {
-                    const hour = Math.floor(i / 2) + 7;
-                    const minute = i % 2 === 0 ? "00" : "30";
-                    const time = `${hour
-                      .toString()
-                      .padStart(2, "0")}:${minute}`;
+                    const hour = Math.floor(i / 2) + 7
+                    const minute = i % 2 === 0 ? "00" : "30"
+                    const time = `${hour.toString().padStart(2, "0")}:${minute}`
 
                     return (
                       <tr className="relative select-none h-5 " key={time}>
@@ -193,27 +192,27 @@ export const WeekCalendarView = ({}) => {
                         </td>
                         {DAYS_OF_WEEK.map((day) => {
                           const events: scheduleProps[] =
-                            scheduleData[day] || [];
+                            scheduleData[day] || []
                           const event = events.find(
                             (e: scheduleProps) => e.startTime === time
-                          );
+                          )
                           if (!event) {
                             return (
                               <td
                                 key={`${day}-${time}`}
                                 className="h-[2.5rem] border border-gray-200"
                               />
-                            );
+                            )
                           }
                           const { startTime, endTime, subject, status, id } =
-                            event;
-                          const duration = TimeDifference(startTime, endTime);
+                            event
+                          const duration = TimeDifference(startTime, endTime)
                           const style: React.CSSProperties = {
                             height: `${(duration as number) * 5}rem`,
-                          };
+                          }
                           const checkStatus = modifiedSchedules?.find(
                             (e) => e.id === id
-                          )?.status;
+                          )?.status
 
                           return (
                             <td
@@ -313,10 +312,10 @@ export const WeekCalendarView = ({}) => {
                                 </div>
                               </div>
                             </td>
-                          );
+                          )
                         })}
                       </tr>
-                    );
+                    )
                   })}
               </tbody>
             </table>
@@ -335,11 +334,38 @@ export const WeekCalendarView = ({}) => {
             <div className="uppercase font-bold text-3xl text-center">
               May F2F Ba?!?
             </div>
-            <Event
+            <WeekCalendarMobileView
               firebaseData={firebaseData}
               modifiedSchedules={modifiedSchedules}
               openModalInformation={openModalInformation}
             >
+              <div className="absolute right-0 h-full bg-blue-500/50">
+                <ul className="absolute right-0 top-5 transform translate-x-1/2">
+                  <li className="flex items-center gap-2 p-2">
+                    <button
+                      className={`border rounded-full w-14 h-14 disabled:cursor-not-allowed disabled:opacity-50 bg-indigo-700 text-center text-white`}
+                      disabled={CompareArraysOfObjects(
+                        scheduleFromDB,
+                        modifiedSchedules
+                      )}
+                      onClick={saveEvents}
+                    >
+                      <AiOutlineSave className="w-full h-full p-3 flex items-center justify-center" />
+                    </button>
+                  </li>
+                  <li className="flex items-center gap-2 p-2">
+                    <button
+                      className={`border rounded-full w-14 h-14 disabled:cursor-not-allowed disabled:opacity-50 bg-indigo-700 text-center text-white`}
+                      disabled={modifiedSchedules?.every(
+                        (event) => event.status === "No Information"
+                      )}
+                      onClick={clearEvents}
+                    >
+                      <AiOutlineClear className="w-full h-full p-3 flex items-center justify-center" />
+                    </button>
+                  </li>
+                </ul>
+              </div>
               {modalState && (
                 <EventModal
                   {...selectedSchedule}
@@ -350,12 +376,12 @@ export const WeekCalendarView = ({}) => {
                   setModifiedSchedules={setModifiedSchedules}
                 />
               )}
-            </Event>
+            </WeekCalendarMobileView>
           </div>
         </>
       ) : (
         <WeekCalendarSkeleton />
       )}
     </>
-  );
-};
+  )
+}

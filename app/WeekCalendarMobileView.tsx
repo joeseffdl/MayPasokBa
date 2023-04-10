@@ -2,19 +2,19 @@ import { scheduleProps } from "@/utils/types";
 import Image from "next/image";
 import { useMemo } from "react";
 
-type EventProps = {
-  children?: React.ReactNode;
-  firebaseData: any;
-  modifiedSchedules: scheduleProps[];
-  openModalInformation: (schedule: scheduleProps) => void;
-};
+type WeekCalendarMobileViewProps = {
+  children?: React.ReactNode
+  firebaseData: any
+  modifiedSchedules: scheduleProps[]
+  openModalInformation: (schedule: scheduleProps) => void
+}
 
-export const Event = ({
+export const WeekCalendarMobileView = ({
   firebaseData,
   children,
   modifiedSchedules,
   openModalInformation,
-}: EventProps) => {
+}: WeekCalendarMobileViewProps) => {
   const countStatusTypes = useMemo(() => {
     const counts: Record<string, number> = {
       "No Information": 0,
@@ -22,20 +22,20 @@ export const Event = ({
       "Face to Face": 0,
       Asynchronous: 0,
       "No Classes": 0,
-    };
+    }
 
-    firebaseData?.modifiedSchedules.forEach((obj: scheduleProps) => {
-      const status: string | undefined = obj.status;
+    firebaseData?.modifiedSchedules?.forEach((obj: scheduleProps) => {
+      const status: string | undefined = obj.status
       if (status && status in counts) {
-        counts[status]++;
+        counts[status]++
       }
-    });
+    })
 
-    return counts;
-  }, [firebaseData?.modifiedSchedules]);
+    return counts
+  }, [firebaseData?.modifiedSchedules])
 
   return (
-    <div className="flex items-center justify-center ">
+    <div className="relative flex items-center justify-center ">
       <div className="max-w-xl w-full drop-shadow-xl">
         <div className="h-full p-10 bg-slate-100  rounded-lg flex flex-col">
           <div className="w-full font-bold text-2xl text-gray-900">
@@ -85,7 +85,7 @@ export const Event = ({
                         : "hover:bg-sky-200 bg-sky-100"
                     } w-full rounded-lg shadow-md px-4 py-2`}
                     onClick={() => {
-                      openModalInformation({ ...data });
+                      openModalInformation({ ...data })
                     }}
                   >
                     <div className="flex flex-col w-full ">
@@ -129,7 +129,7 @@ export const Event = ({
                       {data.status}
                     </div>
                   </div>
-                );
+                )
               })}
               {/* <div>
                 {Object.entries(
@@ -159,6 +159,9 @@ export const Event = ({
                         ? "hover:bg-rose-200 bg-rose-100"
                         : "hover:bg-sky-200 bg-sky-100"
                     } w-full rounded-lg shadow-md px-4 py-2`}
+                    onClick={() => {
+                      openModalInformation({ ...data })
+                    }}
                   >
                     <div className="flex flex-col w-full ">
                       <span
@@ -201,7 +204,7 @@ export const Event = ({
                       {data.status}
                     </div>
                   </div>
-                );
+                )
               })}
             </div>
             <div className="w-full py-5 gap-2 flex flex-col">
@@ -222,6 +225,9 @@ export const Event = ({
                         ? "hover:bg-rose-200 bg-rose-100"
                         : "hover:bg-sky-200 bg-sky-100"
                     } w-full rounded-lg shadow-md px-4 py-2`}
+                    onClick={() => {
+                      openModalInformation({ ...data })
+                    }}
                   >
                     <div className="flex flex-col w-full ">
                       <span
@@ -264,7 +270,7 @@ export const Event = ({
                       {data.status}
                     </div>
                   </div>
-                );
+                )
               })}
             </div>
             <div className="w-full py-5 gap-2 flex flex-col">
@@ -285,6 +291,9 @@ export const Event = ({
                         ? "hover:bg-rose-200 bg-rose-100"
                         : "hover:bg-sky-200 bg-sky-100"
                     } w-full rounded-lg shadow-md px-4 py-2`}
+                    onClick={() => {
+                      openModalInformation({ ...data })
+                    }}
                   >
                     <div className="flex flex-col w-full ">
                       <span
@@ -327,7 +336,7 @@ export const Event = ({
                       {data.status}
                     </div>
                   </div>
-                );
+                )
               })}
             </div>
           </div>
@@ -335,5 +344,5 @@ export const Event = ({
       </div>
       {children}
     </div>
-  );
-};
+  )
+}
