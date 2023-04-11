@@ -3,11 +3,11 @@ import Image from "next/image";
 import { useMemo } from "react";
 
 type WeekCalendarMobileViewProps = {
-  children?: React.ReactNode
-  firebaseData: any
-  modifiedSchedules: scheduleProps[]
-  openModalInformation: (schedule: scheduleProps) => void
-}
+  children?: React.ReactNode;
+  firebaseData: any;
+  modifiedSchedules: scheduleProps[];
+  openModalInformation: (schedule: scheduleProps) => void;
+};
 
 export const WeekCalendarMobileView = ({
   firebaseData,
@@ -22,27 +22,36 @@ export const WeekCalendarMobileView = ({
       "Face to Face": 0,
       Asynchronous: 0,
       "No Classes": 0,
-    }
+    };
 
     firebaseData?.modifiedSchedules?.forEach((obj: scheduleProps) => {
-      const status: string | undefined = obj.status
+      const status: string | undefined = obj.status;
       if (status && status in counts) {
-        counts[status]++
+        counts[status]++;
       }
-    })
+    });
 
-    return counts
-  }, [firebaseData?.modifiedSchedules])
+    return counts;
+  }, [firebaseData?.modifiedSchedules]);
 
   return (
     <div className="relative flex items-center justify-center ">
       <div className="max-w-xl w-full drop-shadow-xl">
         <div className="h-full p-10 bg-slate-100  rounded-lg flex flex-col">
-          <div className="w-full font-bold text-2xl text-gray-900">
+          <div className="w-full font-bold text-2xl text-gray-900 text-center">
             This week's schedule
           </div>
-          <div className="flex w-full px-1 text-gray-800">
-            <div className="w-full">
+          <div className="flex flex-col w-full px-1 text-gray-800">
+            <div className="w-full flex items-center text-center flex-col pt-5">
+              <div className="w-fit">
+                <Image
+                  className="rounded-full border border-slate-500"
+                  src={firebaseData?.avatar}
+                  alt="Avatar"
+                  width={40}
+                  height={40}
+                />
+              </div>
               <div className="w-full font-semibold text-sm ">
                 Scheduled by {firebaseData?.username}
               </div>
@@ -53,15 +62,6 @@ export const WeekCalendarMobileView = ({
                   .slice(1)
                   .join(" ")}
               </div>
-            </div>
-            <div className="w-fit">
-              <Image
-                className="rounded-full border border-slate-500"
-                src={firebaseData?.avatar}
-                alt="Avatar"
-                width={40}
-                height={40}
-              />
             </div>
           </div>
 
@@ -85,7 +85,7 @@ export const WeekCalendarMobileView = ({
                         : "hover:bg-sky-200 bg-sky-100"
                     } w-full rounded-lg shadow-md px-4 py-2`}
                     onClick={() => {
-                      openModalInformation({ ...data })
+                      openModalInformation({ ...data });
                     }}
                   >
                     <div className="flex flex-col w-full ">
@@ -129,7 +129,7 @@ export const WeekCalendarMobileView = ({
                       {data.status}
                     </div>
                   </div>
-                )
+                );
               })}
               {/* <div>
                 {Object.entries(
@@ -160,7 +160,7 @@ export const WeekCalendarMobileView = ({
                         : "hover:bg-sky-200 bg-sky-100"
                     } w-full rounded-lg shadow-md px-4 py-2`}
                     onClick={() => {
-                      openModalInformation({ ...data })
+                      openModalInformation({ ...data });
                     }}
                   >
                     <div className="flex flex-col w-full ">
@@ -204,7 +204,7 @@ export const WeekCalendarMobileView = ({
                       {data.status}
                     </div>
                   </div>
-                )
+                );
               })}
             </div>
             <div className="w-full py-5 gap-2 flex flex-col">
@@ -226,7 +226,7 @@ export const WeekCalendarMobileView = ({
                         : "hover:bg-sky-200 bg-sky-100"
                     } w-full rounded-lg shadow-md px-4 py-2`}
                     onClick={() => {
-                      openModalInformation({ ...data })
+                      openModalInformation({ ...data });
                     }}
                   >
                     <div className="flex flex-col w-full ">
@@ -270,7 +270,7 @@ export const WeekCalendarMobileView = ({
                       {data.status}
                     </div>
                   </div>
-                )
+                );
               })}
             </div>
             <div className="w-full py-5 gap-2 flex flex-col">
@@ -292,7 +292,7 @@ export const WeekCalendarMobileView = ({
                         : "hover:bg-sky-200 bg-sky-100"
                     } w-full rounded-lg shadow-md px-4 py-2`}
                     onClick={() => {
-                      openModalInformation({ ...data })
+                      openModalInformation({ ...data });
                     }}
                   >
                     <div className="flex flex-col w-full ">
@@ -336,7 +336,7 @@ export const WeekCalendarMobileView = ({
                       {data.status}
                     </div>
                   </div>
-                )
+                );
               })}
             </div>
           </div>
@@ -344,5 +344,5 @@ export const WeekCalendarMobileView = ({
       </div>
       {children}
     </div>
-  )
-}
+  );
+};
